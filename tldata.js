@@ -5,44 +5,13 @@
 
    All dashboard data (inventory, batches, bookings)
    is stored in localStorage keyed by logged-in email.
-   On first login each new account gets default demo data.
-   Demo items are flagged with _demo:true and are hidden
-   once the 2-day free trial period has expired.
+   New accounts start with empty datasets and only see
+   data they create themselves.
 */
 
-/* ── Default demo data — flagged with _demo:true ── */
-const TL_DEFAULT_INVENTORY = [
-    { id: 1, _demo: true, name: 'Cascade Hops', category: 'Hops', sku: 'HOP-001', qty: 12, unit: 'lbs', reorder: 20, status: 'low', cost: 4.50 },
-    { id: 2, _demo: true, name: 'Pale Malt', category: 'Grain', sku: 'GRN-002', qty: 340, unit: 'lbs', reorder: 100, status: 'ok', cost: 0.85 },
-    { id: 3, _demo: true, name: 'Centennial Hops', category: 'Hops', sku: 'HOP-003', qty: 45, unit: 'lbs', reorder: 20, status: 'ok', cost: 5.20 },
-    { id: 4, _demo: true, name: 'Crystal 60L', category: 'Grain', sku: 'GRN-004', qty: 180, unit: 'lbs', reorder: 50, status: 'ok', cost: 1.10 },
-    { id: 5, _demo: true, name: 'US-05 Yeast', category: 'Yeast', sku: 'YST-001', qty: 8, unit: 'pkts', reorder: 10, status: 'low', cost: 3.75 },
-    { id: 6, _demo: true, name: 'CO2 Cylinders', category: 'Packaging', sku: 'PKG-001', qty: 4, unit: 'ea', reorder: 3, status: 'ok', cost: 45.00 },
-    { id: 7, _demo: true, name: '1/6 BBL Kegs', category: 'Packaging', sku: 'PKG-002', qty: 22, unit: 'ea', reorder: 10, status: 'ok', cost: 115.00 },
-    { id: 8, _demo: true, name: 'Irish Moss', category: 'Adjunct', sku: 'ADJ-001', qty: 2, unit: 'lbs', reorder: 5, status: 'low', cost: 8.00 },
-    { id: 9, _demo: true, name: 'Citra Hops', category: 'Hops', sku: 'HOP-004', qty: 60, unit: 'lbs', reorder: 25, status: 'ok', cost: 6.80 },
-    { id: 10, _demo: true, name: 'Bottle Caps', category: 'Packaging', sku: 'PKG-003', qty: 5000, unit: 'ea', reorder: 1000, status: 'ok', cost: 0.02 },
-];
-
-const TL_DEFAULT_BATCHES = [
-    { id: 48, _demo: true, name: 'West Coast IPA', style: 'IPA', volume: 320, started: 'Feb 18, 2026', estReady: 'Mar 4, 2026', status: 'fermenting', abv: 6.8, ibu: 72, yeast: 'WLP001', notes: 'Dry hop with Citra & Mosaic at day 5.' },
-    { id: 47, _demo: true, name: 'Amber Ale', style: 'American Ale', volume: 180, started: 'Feb 10, 2026', estReady: 'Feb 28, 2026', status: 'conditioning', abv: 5.2, ibu: 32, yeast: 'US-05', notes: 'Traditional amber with Crystal 60L.' },
-    { id: 46, _demo: true, name: 'Stout Porter', style: 'Porter', volume: 240, started: 'Feb 2, 2026', estReady: 'Feb 20, 2026', status: 'ready', abv: 6.1, ibu: 45, yeast: 'WLP004', notes: 'Rich chocolate and coffee notes.' },
-    { id: 45, _demo: true, name: 'Wheat Lager', style: 'Lager', volume: 200, started: 'Jan 28, 2026', estReady: 'Feb 15, 2026', status: 'ready', abv: 4.5, ibu: 18, yeast: 'W-34/70', notes: 'Light and refreshing summer lager.' },
-    { id: 44, _demo: true, name: 'Pale Ale', style: 'American Ale', volume: 160, started: 'Jan 20, 2026', estReady: 'Feb 8, 2026', status: 'ready-for-sale', abv: 5.6, ibu: 38, yeast: 'US-05', notes: 'Classic American Pale Ale, Cascade hops.' },
-    { id: 43, _demo: true, name: 'Belgian Wit', style: 'Wheat', volume: 280, started: 'Jan 12, 2026', estReady: 'Feb 1, 2026', status: 'ready', abv: 4.9, ibu: 15, yeast: 'WLP400', notes: 'Orange peel and coriander spiced.' },
-    { id: 42, _demo: true, name: 'Double IPA', style: 'IPA', volume: 120, started: 'Jan 5, 2026', estReady: 'Jan 28, 2026', status: 'ready', abv: 8.4, ibu: 95, yeast: 'WLP001', notes: 'High gravity DIPA with Simcoe & Centennial.' },
-];
-
-const TL_DEFAULT_BOOKINGS = [
-    { id: 1, _demo: true, name: 'Henderson Wedding Reception', type: 'Private Event', date: 'Mar 8, 2026', time: '6:00 PM', guests: 80, room: 'Taproom', status: 'confirmed', deposit: 500 },
-    { id: 2, _demo: true, name: 'Corporate Happy Hour — Nexio', type: 'Corporate', date: 'Mar 11, 2026', time: '5:00 PM', guests: 40, room: 'Barrel Room', status: 'confirmed', deposit: 300 },
-    { id: 3, _demo: true, name: 'Friday Tasting Tour', type: 'Public Event', date: 'Feb 27, 2026', time: '4:00 PM', guests: 25, room: 'Brew Floor', status: 'pending', deposit: 0 },
-    { id: 4, _demo: true, name: 'Brewers Association Meeting', type: 'Corporate', date: 'Mar 3, 2026', time: '2:00 PM', guests: 15, room: 'Private Lounge', status: 'confirmed', deposit: 150 },
-    { id: 5, _demo: true, name: 'Gallagher Birthday Party', type: 'Private Event', date: 'Mar 15, 2026', time: '7:00 PM', guests: 35, room: 'Taproom', status: 'confirmed', deposit: 250 },
-    { id: 6, _demo: true, name: 'Saturday Growler Fill Day', type: 'Public Event', date: 'Mar 1, 2026', time: '11:00 AM', guests: 60, room: 'Taproom', status: 'pending', deposit: 0 },
-    { id: 7, _demo: true, name: 'Equipment Rental — Hop Farm', type: 'Rental', date: 'Mar 20, 2026', time: '8:00 AM', guests: 0, room: 'Warehouse', status: 'confirmed', deposit: 800 },
-];
+const TL_DEFAULT_INVENTORY = [];
+const TL_DEFAULT_BATCHES = [];
+const TL_DEFAULT_BOOKINGS = [];
 
 /* ── Helpers ── */
 
@@ -93,9 +62,9 @@ function _TL_defaults() {
         inventory: JSON.parse(JSON.stringify(TL_DEFAULT_INVENTORY)),
         batches: JSON.parse(JSON.stringify(TL_DEFAULT_BATCHES)),
         bookings: JSON.parse(JSON.stringify(TL_DEFAULT_BOOKINGS)),
-        nextInventoryId: 11,
-        nextBatchId: 49,
-        nextBookingId: 8,
+        nextInventoryId: 1,
+        nextBatchId: 1,
+        nextBookingId: 1,
     };
 }
 
@@ -127,21 +96,32 @@ function TL_getData() {
         data = JSON.parse(raw);
     }
 
-    /* After the trial ends, filter out demo items so only real user data shows */
-    if (!TL_isTrialActive()) {
-        data = Object.assign({}, data, {
-            inventory: data.inventory.filter(i => !i._demo),
-            batches: data.batches.filter(b => !b._demo),
-            bookings: data.bookings.filter(b => !b._demo),
-        });
+    // Always remove demo rows so only real user-entered data is ever shown.
+    const inv = Array.isArray(data.inventory) ? data.inventory.filter(i => !i._demo) : [];
+    const bat = Array.isArray(data.batches) ? data.batches.filter(b => !b._demo) : [];
+    const bok = Array.isArray(data.bookings) ? data.bookings.filter(b => !b._demo) : [];
+    const sanitized = Object.assign({}, data, { inventory: inv, batches: bat, bookings: bok });
+
+    // Persist sanitized data once so old demo rows are fully removed from storage.
+    if (key) {
+        const needsWriteBack =
+            !raw ||
+            !Array.isArray(data.inventory) || !Array.isArray(data.batches) || !Array.isArray(data.bookings) ||
+            inv.length !== (data.inventory || []).length ||
+            bat.length !== (data.batches || []).length ||
+            bok.length !== (data.bookings || []).length;
+        if (needsWriteBack) localStorage.setItem(key, JSON.stringify(sanitized));
     }
 
-    return data;
+    return sanitized;
 }
 
 function TL_saveData(data) {
     const key = TL_getDataKey();
-    if (key) localStorage.setItem(key, JSON.stringify(data));
+    if (key) {
+        localStorage.setItem(key, JSON.stringify(data));
+        window.dispatchEvent(new CustomEvent('tl-data-updated'));
+    }
 }
 
 function TL_getUserInfo() {
@@ -156,7 +136,7 @@ function TL_fixMojibakeText(root) {
     const target = root || document.body;
     if (!target) return;
 
-    const maybeBroken = /[ÃÂð]/;
+    const maybeBroken = /[ÃÂâð�]/;
     const walker = document.createTreeWalker(target, NodeFilter.SHOW_TEXT, null);
     const edits = [];
 
@@ -164,12 +144,19 @@ function TL_fixMojibakeText(root) {
         const node = walker.currentNode;
         const txt = node.nodeValue || '';
         if (!maybeBroken.test(txt)) continue;
-        try {
-            const fixed = decodeURIComponent(escape(txt));
-            if (fixed && fixed !== txt) edits.push([node, fixed]);
-        } catch (_) {
-            // Keep original text when decode fails.
+
+        let cur = txt;
+        for (let i = 0; i < 3; i += 1) {
+            if (!maybeBroken.test(cur)) break;
+            try {
+                const next = decodeURIComponent(escape(cur));
+                if (!next || next === cur) break;
+                cur = next;
+            } catch (_) {
+                break;
+            }
         }
+        if (cur !== txt) edits.push([node, cur]);
     }
 
     edits.forEach(([node, fixed]) => { node.nodeValue = fixed; });

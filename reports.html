@@ -750,7 +750,7 @@
                                 <div class="notif-icon" style="background:rgba(147,51,234,0.15);color:#9333ea">📦</div>
                                 <div class="notif-body">
                                     <div class="notif-title">Low Stock Alert<span class="notif-unread-dot"></span></div>
-                                    <div class="notif-desc">Cascade Hops below reorder level (2 lbs remaining)</div>
+                                    <div class="notif-desc">Low-stock alerts will appear here when triggered</div>
                                     <div class="notif-time">5 minutes ago</div>
                                 </div>
                             </div>
@@ -758,7 +758,7 @@
                                 <div class="notif-icon" style="background:rgba(16,185,129,0.15);color:#10b981">🍺</div>
                                 <div class="notif-body">
                                     <div class="notif-title">Batch Ready<span class="notif-unread-dot"></span></div>
-                                    <div class="notif-desc">Batch #45 West Coast IPA is ready for packaging</div>
+                                    <div class="notif-desc">Batch status updates will appear here</div>
                                     <div class="notif-time">1 hour ago</div>
                                 </div>
                             </div>
@@ -766,7 +766,7 @@
                                 <div class="notif-icon" style="background:rgba(96,165,250,0.15);color:#60a5fa">📅</div>
                                 <div class="notif-body">
                                     <div class="notif-title">New Booking<span class="notif-unread-dot"></span></div>
-                                    <div class="notif-desc">Henderson Wedding confirmed for Mar 15</div>
+                                    <div class="notif-desc">Booking confirmations will appear here</div>
                                     <div class="notif-time">3 hours ago</div>
                                 </div>
                             </div>
@@ -847,22 +847,22 @@
             <div class="stats-row">
                 <div class="stat-card">
                     <div class="stat-icon green">💰</div>
-                    <div class="stat-value" id="statRevenue">$18,430</div>
-                    <div class="stat-label" id="statRevenueLabel">Revenue MTD</div>
+                    <div class="stat-value" id="statRevenue">$0</div>
+                    <div class="stat-label" id="statRevenueLabel">Revenue</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon blue">🛢️</div>
-                    <div class="stat-value" id="statUnits">842</div>
+                    <div class="stat-value" id="statUnits">0</div>
                     <div class="stat-label" id="statUnitsLabel">Units Sold (kegs)</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon purple">🏆</div>
-                    <div class="stat-value" id="statTopSeller" style="font-size:16px;line-height:1.4;">West Coast IPA</div>
+                    <div class="stat-value" id="statTopSeller" style="font-size:16px;line-height:1.4;">—</div>
                     <div class="stat-label">Top Seller</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon orange">📋</div>
-                    <div class="stat-value" id="statAvgOrder">$218</div>
+                    <div class="stat-value" id="statAvgOrder">$0</div>
                     <div class="stat-label">Avg Order Value</div>
                 </div>
             </div>
@@ -901,7 +901,7 @@
             <div class="panel">
                 <div class="panel-header">
                     <div class="panel-title">Recent Transactions</div>
-                    <span class="panel-badge" id="txMonthBadge">February 2026</span>
+                    <span class="panel-badge" id="txMonthBadge">No transactions</span>
                 </div>
                 <table>
                     <thead>
@@ -916,68 +916,7 @@
                     </thead>
                     <tbody id="transactionsBody">
                         <tr>
-                            <td>Feb 24</td>
-                            <td>Wholesale Order</td>
-                            <td>West Coast IPA</td>
-                            <td>12</td>
-                            <td class="amount">$2,160</td>
-                            <td><span class="badge badge-blue">Wholesale</span></td>
-                        </tr>
-                        <tr>
-                            <td>Feb 23</td>
-                            <td>Taproom Sales</td>
-                            <td>Amber Ale</td>
-                            <td>4</td>
-                            <td class="amount">$480</td>
-                            <td><span class="badge badge-green">Taproom</span></td>
-                        </tr>
-                        <tr>
-                            <td>Feb 22</td>
-                            <td>Retail Keg Sale</td>
-                            <td>Stout Porter</td>
-                            <td>8</td>
-                            <td class="amount">$1,040</td>
-                            <td><span class="badge badge-orange">Retail</span></td>
-                        </tr>
-                        <tr>
-                            <td>Feb 21</td>
-                            <td>Event Pour</td>
-                            <td>Wheat Lager</td>
-                            <td>2</td>
-                            <td class="amount">$190</td>
-                            <td><span class="badge badge-purple">Events</span></td>
-                        </tr>
-                        <tr>
-                            <td>Feb 20</td>
-                            <td>Wholesale Order</td>
-                            <td>West Coast IPA</td>
-                            <td>20</td>
-                            <td class="amount">$3,600</td>
-                            <td><span class="badge badge-blue">Wholesale</span></td>
-                        </tr>
-                        <tr>
-                            <td>Feb 18</td>
-                            <td>Taproom Sales</td>
-                            <td>Belgian Wit</td>
-                            <td>3</td>
-                            <td class="amount">$360</td>
-                            <td><span class="badge badge-green">Taproom</span></td>
-                        </tr>
-                        <tr>
-                            <td>Feb 17</td>
-                            <td>Retail Keg Sale</td>
-                            <td>Pale Ale</td>
-                            <td>6</td>
-                            <td class="amount">$720</td>
-                            <td><span class="badge badge-orange">Retail</span></td>
-                        </tr>
-                        <tr>
-                            <td>Feb 15</td>
-                            <td>Wholesale Order</td>
-                            <td>Double IPA</td>
-                            <td>15</td>
-                            <td class="amount">$3,225</td>
-                            <td><span class="badge badge-blue">Wholesale</span></td>
+                            <td colspan="6" style="color:var(--txt2);text-align:center;">No transactions available yet.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1023,43 +962,6 @@
             titleColor: '#f1f5f9',
             bodyColor: '#94a3b8',
             padding: 12
-        };
-
-        const DEMO_REPORT_DATA = {
-            '7': {
-                labels: ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
-                data: [12400, 13800, 15200, 17900, 21300, 19100, 18430],
-                revenue: '$18,430',
-                revenueLabel: 'Revenue MTD',
-                units: '842',
-                unitsLabel: 'Units Sold (kegs)',
-                avgOrder: '$218',
-                topSeller: 'West Coast IPA'
-            },
-            '12': {
-                labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
-                data: [8200, 9500, 10800, 11200, 11900, 12400, 13800, 15200, 17900, 21300, 19100, 18430],
-                revenue: '$169,730',
-                revenueLabel: 'Revenue (12 Mo)',
-                units: '3,840',
-                unitsLabel: 'Units Sold (12 Mo)',
-                avgOrder: '$221',
-                topSeller: 'West Coast IPA'
-            },
-            topProducts: {
-                labels: ['W.C. IPA', 'Amber Ale', 'Stout', 'W. Lager', 'Pale Ale', 'Other'],
-                data: [6200, 3800, 3100, 2450, 1900, 980]
-            },
-            transactions: [
-                { date: 'Feb 24', description: 'Wholesale Order', product: 'West Coast IPA', qty: 12, amount: 2160, channel: 'Wholesale' },
-                { date: 'Feb 23', description: 'Taproom Sales', product: 'Amber Ale', qty: 4, amount: 480, channel: 'Taproom' },
-                { date: 'Feb 22', description: 'Retail Keg Sale', product: 'Stout Porter', qty: 8, amount: 1040, channel: 'Retail' },
-                { date: 'Feb 21', description: 'Event Pour', product: 'Wheat Lager', qty: 2, amount: 190, channel: 'Events' },
-                { date: 'Feb 20', description: 'Wholesale Order', product: 'West Coast IPA', qty: 20, amount: 3600, channel: 'Wholesale' },
-                { date: 'Feb 18', description: 'Taproom Sales', product: 'Belgian Wit', qty: 3, amount: 360, channel: 'Taproom' },
-                { date: 'Feb 17', description: 'Retail Keg Sale', product: 'Pale Ale', qty: 6, amount: 720, channel: 'Retail' },
-                { date: 'Feb 15', description: 'Wholesale Order', product: 'Double IPA', qty: 15, amount: 3225, channel: 'Wholesale' }
-            ]
         };
 
         function _monthShort(d) {
@@ -1193,10 +1095,12 @@
             };
         }
 
-        const reportData = TL_isTrialActive() ? DEMO_REPORT_DATA : _buildRealReportData();
+        let reportData = _buildRealReportData();
+        let currentRevenueRange = 'Last 7 Months';
 
         function updateRevenueChart(val) {
-            const key = val.includes('12') ? '12' : '7';
+            currentRevenueRange = val || currentRevenueRange;
+            const key = currentRevenueRange.includes('12') ? '12' : '7';
             const d = reportData[key];
             window.revenueChart.data.labels = d.labels;
             window.revenueChart.data.datasets[0].data = d.data;
@@ -1300,9 +1204,26 @@
             }
         });
 
-        document.getElementById('txMonthBadge').textContent = reportData.txBadge || 'February 2026';
-        renderTransactions(reportData.transactions || []);
-        updateRevenueChart('Last 7 Months');
+        function refreshReportsData() {
+            reportData = _buildRealReportData();
+            document.getElementById('txMonthBadge').textContent = reportData.txBadge || 'No transactions';
+            renderTransactions(reportData.transactions || []);
+            window.productChart.data.labels = reportData.topProducts.labels;
+            window.productChart.data.datasets[0].data = reportData.topProducts.data;
+            window.productChart.update();
+            updateRevenueChart(currentRevenueRange);
+        }
+
+        refreshReportsData();
+
+        window.addEventListener('tl-data-updated', refreshReportsData);
+        window.addEventListener('storage', function (e) {
+            if (e.key && e.key.startsWith('tl_data_')) refreshReportsData();
+        });
+        window.addEventListener('focus', refreshReportsData);
+        document.addEventListener('visibilitychange', function () {
+            if (!document.hidden) refreshReportsData();
+        });
     </script>
     <!-- Delete Account Modal -->
     <div class="modal-overlay" id="deleteAccountModal"
