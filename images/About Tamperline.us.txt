@@ -1,0 +1,154 @@
+About Tamperline.us
+
+Last Updated: [Add Date]
+
+Tamperline.us was created with one goal: to give craft breweries, taprooms, and small independent retailers access to powerful operational tools without the complexity or high cost typically associated with enterprise software.
+
+Our platform helps businesses manage inventory, track production, organize bookings, and streamline operations so owners can spend less time on spreadsheets and more time running their craft.
+
+1. Our Story
+
+Tamperline.us began as a small side project built to solve a common problem: managing keg inventory and brewery operations without relying on complicated spreadsheets.
+
+Our founder, frustrated with manual tracking systems, set out to build a simple digital tool to manage stock more efficiently. What started as a basic inventory tracker quickly gained attention from nearby breweries and taprooms facing the same challenges.
+
+As feedback from early users grew, the platform evolved into a comprehensive system designed specifically for craft beverage businesses.
+
+Today, Tamperline.us supports over 3,200 craft businesses across more than 40 states and countries, helping independent operators manage inventory, track batches, and run their operations more efficiently.
+
+2. Mission and Vision
+Our Mission
+
+Our mission is to make running a craft brewery or small retail shop as smooth and efficient as possible.
+
+We believe independent businesses deserve access to professional-grade software without expensive enterprise contracts or unnecessary complexity.
+
+Our Vision
+
+Our vision is a world where local breweries, taprooms, and specialty retailers can compete on equal footing with larger chains by using tools designed specifically for their workflows.
+
+Tamperline.us aims to provide practical software solutions that support independent operators and help them grow sustainable businesses.
+
+3. What We Build
+
+Tamperline.us is designed to simplify the everyday operational workflows that breweries and specialty retailers rely on.
+
+Key platform capabilities include:
+
+Inventory Management
+
+Real-time inventory tracking
+
+Low-stock alerts
+
+Reorder thresholds
+
+Cost and value insights
+
+Batch and Production Tracking
+
+Track each brew from fermentation through packaging
+
+Record batch notes and production data
+
+Monitor inventory flow across production stages
+
+Booking and Event Management
+
+Manage taproom bookings and reservations
+
+Track event schedules and deposits
+
+Send confirmations and reminders to customers
+
+Data and Reporting
+
+Exportable operational data
+
+Integration with accounting and reporting tools
+
+Analytics for inventory and sales performance
+
+Mobile-Friendly Platform
+
+Clean and intuitive interface
+
+Fully accessible from desktop, tablet, and mobile devices
+
+Designed for use directly from the taproom floor
+
+4. Who We Serve
+
+Tamperline.us is designed for independent businesses across the craft beverage and specialty retail industries.
+
+Our customers include:
+
+Craft breweries and taprooms
+
+Homebrew supply stores
+
+Bottle shops and specialty beverage retailers
+
+Cideries and meaderies
+
+Distillery tasting rooms
+
+Small food and beverage producers
+
+Our goal is to support the businesses that make local communities vibrant and unique.
+
+5. Our Values
+
+The Tamperline.us platform is guided by a set of core principles that shape how we build and operate our software.
+
+Simplicity First
+We focus on powerful features that remain easy to use, without unnecessary complexity.
+
+Transparency
+Clear pricing and honest communication with no hidden fees.
+
+Local First
+Our platform is built specifically for independent operators and local businesses.
+
+Reliability
+We maintain a highly reliable platform with a 99.9% uptime commitment.
+
+Privacy and Data Ownership
+Your business data belongs to you. Tamperline.us does not sell customer or operational data.
+
+6. Our Team
+
+Tamperline.us is developed and maintained by a distributed team of engineers, designers, and industry professionals.
+
+Many members of our team have direct experience working with breweries and craft beverage businesses, which helps us build software that reflects real operational workflows.
+
+Our team works remotely across the United States and maintains close connections with the craft beverage community through industry events, festivals, and partnerships.
+
+We build tools for the community because we are part of it.
+
+7. Careers
+
+Tamperline.us is growing and we are always interested in connecting with talented people who want to help support independent businesses.
+
+If you are interested in joining our team, please visit our Careers page to view current opportunities.
+
+8. Contact Information
+
+If you would like to learn more about Tamperline.us or contact our team, please use the information below.
+
+Platform
+Tamperline.us
+
+Address
+1021 E Lincolnway #9869
+Cheyenne, WY 82001
+United States
+
+Phone
++1 (917) 695-4783
+
+Email
+support@tamperline.us
+
+Website
+https://tamperline.us

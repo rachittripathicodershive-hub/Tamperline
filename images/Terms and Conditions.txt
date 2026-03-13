@@ -1,0 +1,341 @@
+Terms and Conditions
+
+Last Updated: March 9, 2026
+
+Welcome to Tamperline.us, an inventory management and booking platform designed for craft breweries, taprooms, and small retail businesses.
+
+These Terms and Conditions ("Terms") govern your access to and use of the Tamperline.us platform, website, and related services (collectively, the "Services").
+
+By accessing or using Tamperline.us, you agree to comply with and be legally bound by these Terms. If you do not agree with these Terms, you must not use the Services.
+
+1. About Tamperline.us
+
+Tamperline.us provides software tools for breweries and local businesses including:
+
+Inventory tracking
+
+Batch production logging
+
+Taproom booking management
+
+Equipment rental management
+
+Sales analytics and reporting
+
+The platform is operated by:
+
+Tamperline.us LLC
+
+1021 E Lincolnway #9869
+Cheyenne, WY 82001
+United States
+
+Website:
+tamperline.us
+
+2. Acceptance of Terms
+
+By creating an account or using the platform, you confirm that:
+
+You have read and understood these Terms
+
+You agree to be legally bound by them
+
+You are at least 18 years old
+
+If acting on behalf of a company or brewery, you have the authority to bind that organization to these Terms
+
+3. Your Tamperline Account
+3.1 Account Registration
+
+To access certain features of the Services, you must create an account.
+
+You may be required to provide information including:
+
+Business name
+
+Business address
+
+Contact information
+
+Operational data related to inventory or bookings
+
+You agree that the information you provide is accurate and kept up to date.
+
+3.2 Account Security
+
+You are responsible for maintaining the confidentiality of your login credentials.
+
+You agree to:
+
+Keep your password secure
+
+Not share your credentials with unauthorized persons
+
+Notify us immediately of any unauthorized access
+
+Ensure your staff comply with these Terms
+
+Tamperline.us is not responsible for losses caused by unauthorized account access due to failure to maintain account security.
+
+4. Permitted Use of the Platform
+
+Tamperline.us is designed for use by:
+
+Craft breweries
+
+Microbreweries
+
+Taprooms
+
+Homebrewing supply retailers
+
+Small retail businesses
+
+Permitted uses include:
+
+Tracking ingredient inventory (hops, malt, yeast, etc.)
+
+Logging batch production records
+
+Managing packaging inventory
+
+Managing taproom reservations and bookings
+
+Handling equipment rentals
+
+Generating sales reports and inventory analytics
+
+The platform must only be used for legitimate business operations.
+
+5. Prohibited Activities
+
+You agree not to:
+
+Scrape or extract platform data without permission
+
+Upload malware or malicious software
+
+Attempt to gain unauthorized access to other accounts
+
+Reverse engineer or decompile the platform
+
+Resell or sublicense the platform
+
+Use the platform for unlawful activities
+
+Violation may result in:
+
+Immediate account suspension
+
+Permanent termination
+
+Legal action where applicable
+
+6. Intellectual Property
+
+All intellectual property related to Tamperline.us including:
+
+Software
+
+Dashboard interface
+
+Platform design
+
+Branding and logos
+
+Written content
+
+remains the exclusive property of Tamperline.us.
+
+You may not reproduce, distribute, or modify any part of the platform without written permission.
+
+7. Your Business Data
+7.1 Ownership of Data
+
+You retain full ownership of any data uploaded to the platform, including:
+
+Recipes
+
+Batch logs
+
+Inventory records
+
+Sales reports
+
+Customer booking information
+
+7.2 Platform Data Processing
+
+By using Tamperline.us, you grant us a limited license to:
+
+Store your data
+
+Process your data
+
+Display your data within the platform
+
+This license exists solely for the purpose of providing and improving the Services.
+
+Tamperline.us does not sell or distribute proprietary brewery data.
+
+7.3 Data Export
+
+You may export your platform data at any time through your account dashboard.
+
+8. Billing and Subscription
+
+Certain features of Tamperline.us may require a paid subscription.
+
+Subscriptions may be billed:
+
+Monthly
+
+Annually
+
+Payments are processed through third-party payment providers such as:
+
+Wise
+
+Stripe
+
+Paddle
+
+By subscribing, you authorize these providers to charge your selected payment method.
+
+Tamperline.us does not store full payment card details.
+
+Pricing may change with prior notice to users.
+
+9. Account Cancellation and Termination
+
+You may cancel your subscription at any time through your account dashboard.
+
+Upon cancellation:
+
+Your subscription remains active until the end of the billing period
+
+Access to paid features may end when the billing cycle expires
+
+Tamperline.us may suspend or terminate accounts that:
+
+Violate these Terms
+
+Abuse platform functionality
+
+Engage in unlawful activities
+
+10. Refund Policy
+
+Unless otherwise stated, subscription payments are non-refundable.
+
+Refunds may be granted only:
+
+where required by applicable law
+
+in cases of billing errors
+
+11. Changes to the Platform
+
+Tamperline.us may update or modify platform features at any time.
+
+Where possible, we will notify users at least 14 days in advance of significant changes.
+
+Continued use of the Services after updates indicates acceptance of the revised Terms.
+
+12. Service Availability
+
+Tamperline.us strives to maintain high service availability.
+
+However, the platform may occasionally be unavailable due to:
+
+maintenance
+
+updates
+
+security fixes
+
+technical issues
+
+We do not guarantee uninterrupted service.
+
+13. Third-Party Services
+
+The platform may rely on third-party infrastructure including:
+
+cloud hosting providers
+
+payment processors
+
+analytics tools
+
+email delivery services
+
+Tamperline.us is not responsible for the policies or availability of these third-party services.
+
+14. Limitation of Liability
+
+To the fullest extent permitted by law, Tamperline.us shall not be liable for:
+
+indirect damages
+
+loss of business revenue
+
+loss of data
+
+interruption of business operations
+
+Our total liability shall not exceed the amount paid by you to Tamperline.us in the 30 days preceding the claim.
+
+15. Indemnification
+
+You agree to indemnify and hold harmless Tamperline.us, its affiliates, employees, and partners from any claims, damages, or legal expenses resulting from:
+
+misuse of the platform
+
+violation of these Terms
+
+infringement of third-party rights
+
+unlawful business activities conducted through the platform
+
+16. Disclaimer
+
+The Services are provided "as is" and "as available".
+
+Tamperline.us makes no guarantees regarding:
+
+uninterrupted service
+
+accuracy of analytics reports
+
+compatibility with all business workflows
+
+17. Governing Law
+
+These Terms are governed by the laws of the State of Wyoming, United States.
+
+Any disputes shall be resolved exclusively in courts located in Cheyenne, Wyoming.
+
+Nothing in these Terms limits rights granted under applicable consumer protection laws.
+
+18. Entire Agreement
+
+These Terms constitute the entire agreement between you and Tamperline.us regarding the use of the Services and supersede any prior agreements.
+
+19. Contact Information
+
+If you have questions about these Terms, please contact:
+
+Tamperline.us LLC
+
+Address
+1021 E Lincolnway #9869
+Cheyenne, WY 82001
+United States
+
+Website
+tamperline.us
+
+Email
+support@tamperline.us
