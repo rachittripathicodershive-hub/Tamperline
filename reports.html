@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Reports — Tamperline.us</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0d0d18;
+            --bg2: #13132a;
+            --bg3: #1a1a35;
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #9333ea;
+            --accent2: #6366f1;
+            --blue: #60a5fa;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --red: #f87171;
+            --txt: #f1f5f9;
+            --txt2: #94a3b8;
+            --txt3: #64748b;
+            --radius: 14px;
+            --sidebar-w: 240px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--txt);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 100;
+            padding: 28px 0 24px;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 22px 28px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 18px;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+        }
+
+        .brand-name {
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .brand-name span {
+            color: var(--accent2);
+        }
+
+        .nav-section-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--txt3);
+            text-transform: uppercase;
+            padding: 10px 22px 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 22px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--txt2);
+            text-decoration: none;
+            margin: 1px 10px;
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--txt);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(147, 51, 234, 0.18), rgba(99, 102, 241, 0.12));
+            color: var(--txt);
+        }
+
+        .nav-item.active .nav-icon {
+            color: var(--accent);
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-spacer {
+            flex: 1;
+        }
+
+        .sidebar-logout {
+            margin: 0 10px;
+            padding: 10px 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--red);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s;
+            background: none;
+            border: none;
+            width: calc(100% - 20px);
+            font-family: inherit;
+        }
+
+        .sidebar-logout:hover {
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .topbar-sub {
+            font-size: 12px;
+            color: var(--txt2);
+            margin-top: 2px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .avatar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.14), rgba(99, 102, 241, 0.09));
+            border-radius: 12px;
+            padding: 8px 14px 8px 8px;
+            border: 1px solid rgba(147, 51, 234, 0.32);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .avatar-wrap:hover {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.22), rgba(99, 102, 241, 0.16));
+            border-color: rgba(147, 51, 234, 0.55);
+            box-shadow: 0 0 18px rgba(147, 51, 234, 0.22);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--blue));
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+            font-weight: 800;
+            flex-shrink: 0;
+            box-shadow: 0 0 12px rgba(147, 51, 234, 0.45);
+        }
+
+        .avatar-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .avatar-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--txt);
+        }
+
+        .avatar-role {
+            font-size: 10px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-top: 3px;
+            letter-spacing: 0.04em;
+        }
+
+        .notification-btn {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .notif-dot {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            width: 7px;
+            height: 7px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 2px solid var(--bg2);
+        }
+
+        .content {
+            padding: 32px;
+            flex: 1;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .stat-icon.purple {
+            background: rgba(147, 51, 234, 0.15);
+        }
+
+        .stat-icon.blue {
+            background: rgba(96, 165, 250, 0.15);
+        }
+
+        .stat-icon.green {
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .stat-icon.orange {
+            background: rgba(245, 158, 11, 0.15);
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--txt2);
+            font-weight: 500;
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 960px) {
+            .reports-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .panel-badge {
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(147, 51, 234, 0.15);
+            color: var(--accent);
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-select {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 5px 12px;
+            color: var(--txt2);
+            font-family: inherit;
+            font-size: 12px;
+        }
+
+        .filter-select option {
+            background: var(--bg3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--txt3);
+            padding: 12px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr {
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        tbody td {
+            padding: 12px 20px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--green);
+        }
+
+        .badge-blue {
+            background: rgba(96, 165, 250, 0.15);
+            color: var(--blue);
+        }
+
+        .badge-orange {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--orange);
+        }
+
+        .badge-red {
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--red);
+        }
+
+        .badge-purple {
+            background: rgba(147, 51, 234, 0.15);
+            color: var(--accent);
+        }
+
+        .amount {
+            font-weight: 700;
+            color: var(--txt);
+        }
+
+        /* ── DROPDOWNS ── */
+        .dropdown-wrap {
+            position: relative;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: var(--bg2);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.04);
+            z-index: 999;
+        }
+
+        .dropdown.open {
+            display: block;
+            animation: dropIn 0.18s cubic-bezier(0.34, 1.2, 0.64, 1);
+        }
+
+        @keyframes dropIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .notif-dropdown {
+            width: 340px;
+        }
+
+        .notif-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .notif-header-title {
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notif-count-badge {
+            font-size: 10px;
+            font-weight: 700;
+            background: rgba(147, 51, 234, 0.2);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .notif-mark-read {
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            transition: color 0.2s;
+        }
+
+        .notif-mark-read:hover {
+            color: var(--blue);
+        }
+
+        .notif-list {
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+
+        .notif-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .notif-item.unread {
+            background: rgba(147, 51, 234, 0.06);
+        }
+
+        .notif-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .notif-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notif-title {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--txt);
+            margin-bottom: 2px;
+        }
+
+        .notif-desc {
+            font-size: 11.5px;
+            color: var(--txt2);
+            line-height: 1.4;
+        }
+
+        .notif-time {
+            font-size: 10px;
+            color: var(--txt3);
+            margin-top: 4px;
+        }
+
+        .notif-unread-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--accent);
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        .notif-footer {
+            padding: 11px 18px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .notif-footer a {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .notif-footer a:hover {
+            color: var(--blue);
+        }
+
+        .profile-dropdown {
+            width: 224px;
+        }
+
+        .profile-hdr {
+            padding: 14px 18px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-hdr-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--txt);
+        }
+
+        .profile-hdr-role {
+            font-size: 11px;
+            color: var(--txt3);
+            margin-top: 3px;
+        }
+
+        .pmenu {
+            padding: 6px 0;
+        }
+
+        .pmenu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--txt2);
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            text-decoration: none;
+        }
+
+        .pmenu-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--txt);
+        }
+
+        .pmenu-item.danger {
+            color: var(--red);
+        }
+
+        .pmenu-item.danger:hover {
+            background: rgba(248, 113, 113, 0.08);
+        }
+
+        .pmenu-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 5px 0;
+        }
+
+        .pmenu-icon {
+            font-size: 14px;
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+
+        .chevron-icon {
+            font-size: 9px;
+            color: var(--txt3);
+            margin-left: 2px;
+        }
+
+        .dropdown-wrap.active .notification-btn {
+            background: rgba(147, 51, 234, 0.15);
+            border-color: rgba(147, 51, 234, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">🍺</div>
+            <div class="brand-name">Brew<span>Track</span></div>
+        </div>
+        <div class="nav-section-label">Main</div>
+        <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="inventory.html" class="nav-item"><span class="nav-icon">📦</span> Inventory</a>
+        <a href="batches.html" class="nav-item"><span class="nav-icon">🧪</span> Batches</a>
+        <a href="bookings.html" class="nav-item"><span class="nav-icon">📅</span> Bookings</a>
+        <div class="nav-section-label">Analytics</div>
+        <a href="reports.html" class="nav-item active"><span class="nav-icon">📈</span> Sales Reports</a>
+        <a href="insights.html" class="nav-item"><span class="nav-icon">💡</span> Insights</a>
+        <div class="nav-section-label">Settings</div>
+        <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+        <div class="sidebar-spacer"></div>
+        <button class="sidebar-logout" onclick="logout()"><span class="nav-icon">🚪</span> Log Out</button>
+    </aside>
+
+    <div class="main">
+        <header class="topbar">
+            <div>
+                <div class="topbar-title">Sales Reports</div>
+                <div class="topbar-sub">February 2026 · Barrel Plan</div>
+            </div>
+            <div class="topbar-right">
+                <!-- Notification Bell -->
+                <div class="dropdown-wrap" id="notifWrap">
+                    <div class="notification-btn" onclick="toggleDropdown('notifDrop','notifWrap')">🔔<span
+                            class="notif-dot" id="notifDot"></span></div>
+                    <div class="dropdown notif-dropdown" id="notifDrop">
+                        <div class="notif-header">
+                            <span class="notif-header-title">Notifications</span>
+                            <span class="notif-count-badge" id="notifBadge">3 new</span>
+                            <button class="notif-mark-read" onclick="markAllRead()">Mark all read</button>
+                        </div>
+                        <div class="notif-list">
+                            <div class="notif-item unread">
+                                <div class="notif-icon" style="background:rgba(147,51,234,0.15);color:#9333ea">📦</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Low Stock Alert<span class="notif-unread-dot"></span></div>
+                                    <div class="notif-desc">Cascade Hops below reorder level (2 lbs remaining)</div>
+                                    <div class="notif-time">5 minutes ago</div>
+                                </div>
+                            </div>
+                            <div class="notif-item unread">
+                                <div class="notif-icon" style="background:rgba(16,185,129,0.15);color:#10b981">🍺</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Batch Ready<span class="notif-unread-dot"></span></div>
+                                    <div class="notif-desc">Batch #45 West Coast IPA is ready for packaging</div>
+                                    <div class="notif-time">1 hour ago</div>
+                                </div>
+                            </div>
+                            <div class="notif-item unread">
+                                <div class="notif-icon" style="background:rgba(96,165,250,0.15);color:#60a5fa">📅</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">New Booking<span class="notif-unread-dot"></span></div>
+                                    <div class="notif-desc">Henderson Wedding confirmed for Mar 15</div>
+                                    <div class="notif-time">3 hours ago</div>
+                                </div>
+                            </div>
+                            <div class="notif-item">
+                                <div class="notif-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b">📊</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Weekly Summary</div>
+                                    <div class="notif-desc">Your weekly report is ready — revenue up 8.2%</div>
+                                    <div class="notif-time">Yesterday</div>
+                                </div>
+                            </div>
+                            <div class="notif-item">
+                                <div class="notif-icon" style="background:rgba(147,51,234,0.15);color:#9333ea">🏆</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Revenue Milestone</div>
+                                    <div class="notif-desc">You hit $18K in February — new monthly record!</div>
+                                    <div class="notif-time">2 days ago</div>
+                                </div>
+                            </div>
+                            <div class="notif-item">
+                                <div class="notif-icon" style="background:rgba(99,102,241,0.15);color:#6366f1">⚙️</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">System</div>
+                                    <div class="notif-desc">Tamperline.us updated to v2.4.1 — see what's new</div>
+                                    <div class="notif-time">3 days ago</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notif-footer"><a href="#">View all notifications →</a></div>
+                    </div>
+                </div>
+                <!-- Profile Menu -->
+                <div class="dropdown-wrap" id="profileWrap">
+                    <div class="avatar-wrap" onclick="toggleDropdown('profileDrop','profileWrap')">
+                        <div class="avatar">B</div>
+                        <div class="avatar-info">
+                            <div class="avatar-name">My Brewery</div>
+                            <div class="avatar-role">✦ Barrel Plan</div>
+                        </div>
+                        <svg class="chevron-icon" viewBox="0 0 20 20" fill="currentColor"
+                            style="width:16px;height:16px;flex-shrink:0;">
+                            <path fill-rule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="dropdown profile-dropdown" id="profileDrop">
+                        <div class="profile-hdr">
+                            <div class="avatar" style="width:40px;height:40px;font-size:17px;border-radius:11px;">B
+                            </div>
+                            <div>
+                                <div class="profile-hdr-name">My Brewery</div>
+                                <div class="profile-hdr-role">Owner · Barrel Plan</div>
+                            </div>
+                        </div>
+                        <div class="pmenu">
+                            <a class="pmenu-item" href="settings.html"><span class="pmenu-icon">👤</span>My Profile</a>
+                            <a class="pmenu-item" href="settings.html"><span class="pmenu-icon">⚙️</span>Settings</a>
+                            <a class="pmenu-item" href="settings.html#billing"><span class="pmenu-icon">💳</span>Billing
+                                &amp; Plan</a>
+                            <a class="pmenu-item" href="dashboard.html"><span class="pmenu-icon">🏠</span>Dashboard</a>
+                            <div class="pmenu-divider"></div>
+                            <a class="pmenu-item" href="help-support.html"><span class="pmenu-icon">❓</span>Help &amp;
+                                Support</a>
+                            <div class="pmenu-divider"></div>
+                            <a class="pmenu-item danger" href="#" onclick="openDeleteAccountModal();return false;"><span
+                                    class="pmenu-icon">🗑️</span>Delete Account</a>
+                            <a class="pmenu-item danger" href="#" onclick="logout();return false;"><span
+                                    class="pmenu-icon">🚪</span>Log Out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- Stat cards -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon green">💰</div>
+                    <div class="stat-value" id="statRevenue">$18,430</div>
+                    <div class="stat-label" id="statRevenueLabel">Revenue MTD</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">🛢️</div>
+                    <div class="stat-value" id="statUnits">842</div>
+                    <div class="stat-label" id="statUnitsLabel">Units Sold (kegs)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">🏆</div>
+                    <div class="stat-value" id="statTopSeller" style="font-size:16px;line-height:1.4;">West Coast IPA</div>
+                    <div class="stat-label">Top Seller</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">📋</div>
+                    <div class="stat-value" id="statAvgOrder">$218</div>
+                    <div class="stat-label">Avg Order Value</div>
+                </div>
+            </div>
+
+            <!-- Charts row -->
+            <div class="reports-grid">
+                <!-- Revenue Trend -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">📈 Revenue Trend</div>
+                        <div class="filter-row">
+                            <select class="filter-select" onchange="updateRevenueChart(this.value)">
+                                <option>Last 7 Months</option>
+                                <option>Last 12 Months</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="padding:20px 24px;height:320px;">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Top Products -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">🏆 Top Products</div>
+                        <span class="panel-badge">By Revenue</span>
+                    </div>
+                    <div style="padding:20px 24px;height:320px;">
+                        <canvas id="productChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction Table -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Recent Transactions</div>
+                    <span class="panel-badge" id="txMonthBadge">February 2026</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Product</th>
+                            <th>Qty (kegs)</th>
+                            <th>Amount</th>
+                            <th>Channel</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsBody">
+                        <tr>
+                            <td>Feb 24</td>
+                            <td>Wholesale Order</td>
+                            <td>West Coast IPA</td>
+                            <td>12</td>
+                            <td class="amount">$2,160</td>
+                            <td><span class="badge badge-blue">Wholesale</span></td>
+                        </tr>
+                        <tr>
+                            <td>Feb 23</td>
+                            <td>Taproom Sales</td>
+                            <td>Amber Ale</td>
+                            <td>4</td>
+                            <td class="amount">$480</td>
+                            <td><span class="badge badge-green">Taproom</span></td>
+                        </tr>
+                        <tr>
+                            <td>Feb 22</td>
+                            <td>Retail Keg Sale</td>
+                            <td>Stout Porter</td>
+                            <td>8</td>
+                            <td class="amount">$1,040</td>
+                            <td><span class="badge badge-orange">Retail</span></td>
+                        </tr>
+                        <tr>
+                            <td>Feb 21</td>
+                            <td>Event Pour</td>
+                            <td>Wheat Lager</td>
+                            <td>2</td>
+                            <td class="amount">$190</td>
+                            <td><span class="badge badge-purple">Events</span></td>
+                        </tr>
+                        <tr>
+                            <td>Feb 20</td>
+                            <td>Wholesale Order</td>
+                            <td>West Coast IPA</td>
+                            <td>20</td>
+                            <td class="amount">$3,600</td>
+                            <td><span class="badge badge-blue">Wholesale</span></td>
+                        </tr>
+                        <tr>
+                            <td>Feb 18</td>
+                            <td>Taproom Sales</td>
+                            <td>Belgian Wit</td>
+                            <td>3</td>
+                            <td class="amount">$360</td>
+                            <td><span class="badge badge-green">Taproom</span></td>
+                        </tr>
+                        <tr>
+                            <td>Feb 17</td>
+                            <td>Retail Keg Sale</td>
+                            <td>Pale Ale</td>
+                            <td>6</td>
+                            <td class="amount">$720</td>
+                            <td><span class="badge badge-orange">Retail</span></td>
+                        </tr>
+                        <tr>
+                            <td>Feb 15</td>
+                            <td>Wholesale Order</td>
+                            <td>Double IPA</td>
+                            <td>15</td>
+                            <td class="amount">$3,225</td>
+                            <td><span class="badge badge-blue">Wholesale</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="node_modules/chart.js/dist/chart.umd.js"></script>
+    <script src="tldata.js"></script>
+    <script>
+        TL_initUI();
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) window.location.href = 'index.html';
+        }
+        function toggleDropdown(id, wrapId) {
+            const drop = document.getElementById(id);
+            const wrap = document.getElementById(wrapId);
+            const isOpen = drop.classList.contains('open');
+            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+            document.querySelectorAll('.dropdown-wrap').forEach(w => w.classList.remove('active'));
+            if (!isOpen) { drop.classList.add('open'); wrap.classList.add('active'); }
+        }
+        function markAllRead() {
+            document.querySelectorAll('.notif-item.unread').forEach(item => item.classList.remove('unread'));
+            document.querySelectorAll('.notif-unread-dot').forEach(dot => dot.remove());
+            const dot = document.getElementById('notifDot');
+            if (dot) dot.style.display = 'none';
+            const badge = document.getElementById('notifBadge');
+            if (badge) { badge.textContent = '0 new'; badge.style.background = 'rgba(148,163,184,0.15)'; badge.style.color = '#94a3b8'; }
+        }
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.dropdown-wrap')) {
+                document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+                document.querySelectorAll('.dropdown-wrap').forEach(w => w.classList.remove('active'));
+            }
+        });
+
+        const tooltipDefaults = {
+            backgroundColor: '#1a1a35',
+            borderColor: 'rgba(255,255,255,0.08)',
+            borderWidth: 1,
+            titleColor: '#f1f5f9',
+            bodyColor: '#94a3b8',
+            padding: 12
+        };
+
+        const DEMO_REPORT_DATA = {
+            '7': {
+                labels: ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
+                data: [12400, 13800, 15200, 17900, 21300, 19100, 18430],
+                revenue: '$18,430',
+                revenueLabel: 'Revenue MTD',
+                units: '842',
+                unitsLabel: 'Units Sold (kegs)',
+                avgOrder: '$218',
+                topSeller: 'West Coast IPA'
+            },
+            '12': {
+                labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
+                data: [8200, 9500, 10800, 11200, 11900, 12400, 13800, 15200, 17900, 21300, 19100, 18430],
+                revenue: '$169,730',
+                revenueLabel: 'Revenue (12 Mo)',
+                units: '3,840',
+                unitsLabel: 'Units Sold (12 Mo)',
+                avgOrder: '$221',
+                topSeller: 'West Coast IPA'
+            },
+            topProducts: {
+                labels: ['W.C. IPA', 'Amber Ale', 'Stout', 'W. Lager', 'Pale Ale', 'Other'],
+                data: [6200, 3800, 3100, 2450, 1900, 980]
+            },
+            transactions: [
+                { date: 'Feb 24', description: 'Wholesale Order', product: 'West Coast IPA', qty: 12, amount: 2160, channel: 'Wholesale' },
+                { date: 'Feb 23', description: 'Taproom Sales', product: 'Amber Ale', qty: 4, amount: 480, channel: 'Taproom' },
+                { date: 'Feb 22', description: 'Retail Keg Sale', product: 'Stout Porter', qty: 8, amount: 1040, channel: 'Retail' },
+                { date: 'Feb 21', description: 'Event Pour', product: 'Wheat Lager', qty: 2, amount: 190, channel: 'Events' },
+                { date: 'Feb 20', description: 'Wholesale Order', product: 'West Coast IPA', qty: 20, amount: 3600, channel: 'Wholesale' },
+                { date: 'Feb 18', description: 'Taproom Sales', product: 'Belgian Wit', qty: 3, amount: 360, channel: 'Taproom' },
+                { date: 'Feb 17', description: 'Retail Keg Sale', product: 'Pale Ale', qty: 6, amount: 720, channel: 'Retail' },
+                { date: 'Feb 15', description: 'Wholesale Order', product: 'Double IPA', qty: 15, amount: 3225, channel: 'Wholesale' }
+            ]
+        };
+
+        function _monthShort(d) {
+            return d.toLocaleDateString('en-US', { month: 'short' });
+        }
+
+        function _monthLong(d) {
+            return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        }
+
+        function _parseBookingDate(s) {
+            if (!s) return null;
+            const t = Date.parse(s);
+            return isNaN(t) ? null : new Date(t);
+        }
+
+        function _bookingAmount(b) {
+            const dep = parseFloat(b.deposit) || 0;
+            const toPay = parseFloat(b.amountToPay);
+            if (Number.isFinite(toPay)) return Math.max(0, dep + toPay);
+            return 500;
+        }
+
+        function _channelFromType(type) {
+            if (type === 'Corporate') return { label: 'Wholesale', cls: 'badge-blue' };
+            if (type === 'Public Event') return { label: 'Taproom', cls: 'badge-green' };
+            if (type === 'Rental') return { label: 'Retail', cls: 'badge-orange' };
+            return { label: 'Events', cls: 'badge-purple' };
+        }
+
+        function _formatMoney(n) {
+            return '$' + (n || 0).toLocaleString(undefined, { maximumFractionDigits: 0 });
+        }
+
+        function _buildRealReportData() {
+            const d = TL_getData();
+            const bookings = (d.bookings || []).filter(b => !b._demo);
+            const batches = (d.batches || []).filter(b => !b._demo);
+            const now = new Date();
+
+            const styleVolumes = {};
+            batches.forEach(b => {
+                const key = b.style || b.name || 'Other';
+                styleVolumes[key] = (styleVolumes[key] || 0) + (parseFloat(b.volume) || 0);
+            });
+            const bestStyle = Object.entries(styleVolumes).sort((a, b) => b[1] - a[1])[0]?.[0] || '—';
+
+            const transactions = bookings
+                .map(b => {
+                    const dt = _parseBookingDate(b.date);
+                    if (!dt) return null;
+                    const ch = _channelFromType(b.type);
+                    const amount = _bookingAmount(b);
+                    return {
+                        dateObj: dt,
+                        date: dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                        description: ch.label === 'Wholesale' ? 'Wholesale Order' : (ch.label === 'Taproom' ? 'Taproom Sales' : (ch.label === 'Retail' ? 'Retail Keg Sale' : 'Event Pour')),
+                        product: bestStyle !== '—' ? bestStyle : (b.type || 'Booking'),
+                        qty: Math.max(1, Math.round((parseInt(b.guests, 10) || 0) / 8)),
+                        amount,
+                        channel: ch.label,
+                        channelClass: ch.cls
+                    };
+                })
+                .filter(Boolean)
+                .sort((a, b) => b.dateObj - a.dateObj);
+
+            const monthlyKeys = [];
+            const monthlyLabels = [];
+            for (let i = 11; i >= 0; i -= 1) {
+                const dt = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                monthlyKeys.push(dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0'));
+                monthlyLabels.push(_monthShort(dt));
+            }
+
+            const monthlyRevenue = Object.fromEntries(monthlyKeys.map(k => [k, 0]));
+            const monthlyUnits = Object.fromEntries(monthlyKeys.map(k => [k, 0]));
+            transactions.forEach(t => {
+                const k = t.dateObj.getFullYear() + '-' + String(t.dateObj.getMonth() + 1).padStart(2, '0');
+                if (Object.prototype.hasOwnProperty.call(monthlyRevenue, k)) {
+                    monthlyRevenue[k] += t.amount;
+                    monthlyUnits[k] += t.qty;
+                }
+            });
+
+            const series12 = monthlyKeys.map(k => Math.round(monthlyRevenue[k]));
+            const units12 = monthlyKeys.reduce((sum, k) => sum + monthlyUnits[k], 0);
+            const series7 = series12.slice(-7);
+            const labels7 = monthlyLabels.slice(-7);
+            const units7 = monthlyKeys.slice(-7).reduce((sum, k) => sum + monthlyUnits[k], 0);
+
+            const total7 = series7.reduce((s, n) => s + n, 0);
+            const total12 = series12.reduce((s, n) => s + n, 0);
+            const avgOrder = transactions.length ? Math.round(transactions.reduce((s, t) => s + t.amount, 0) / transactions.length) : 0;
+
+            const productRevenue = {};
+            transactions.forEach(t => { productRevenue[t.product] = (productRevenue[t.product] || 0) + t.amount; });
+            const topProducts = Object.entries(productRevenue).sort((a, b) => b[1] - a[1]).slice(0, 6);
+            while (topProducts.length < 6) topProducts.push(['Other', 0]);
+
+            const latestTx = transactions[0];
+            const latestBadge = latestTx ? _monthLong(latestTx.dateObj) : 'No transactions';
+
+            return {
+                '7': {
+                    labels: labels7,
+                    data: series7,
+                    revenue: _formatMoney(total7),
+                    revenueLabel: 'Revenue (Last 7 Mo)',
+                    units: units7.toLocaleString(),
+                    unitsLabel: 'Units Sold (kegs)',
+                    avgOrder: _formatMoney(avgOrder),
+                    topSeller: bestStyle
+                },
+                '12': {
+                    labels: monthlyLabels,
+                    data: series12,
+                    revenue: _formatMoney(total12),
+                    revenueLabel: 'Revenue (12 Mo)',
+                    units: units12.toLocaleString(),
+                    unitsLabel: 'Units Sold (12 Mo)',
+                    avgOrder: _formatMoney(avgOrder),
+                    topSeller: bestStyle
+                },
+                topProducts: {
+                    labels: topProducts.map(x => x[0]),
+                    data: topProducts.map(x => Math.round(x[1]))
+                },
+                transactions,
+                txBadge: latestBadge
+            };
+        }
+
+        const reportData = TL_isTrialActive() ? DEMO_REPORT_DATA : _buildRealReportData();
+
+        function updateRevenueChart(val) {
+            const key = val.includes('12') ? '12' : '7';
+            const d = reportData[key];
+            window.revenueChart.data.labels = d.labels;
+            window.revenueChart.data.datasets[0].data = d.data;
+            window.revenueChart.update();
+            document.getElementById('statRevenue').textContent = d.revenue;
+            document.getElementById('statRevenueLabel').textContent = d.revenueLabel;
+            document.getElementById('statUnits').textContent = d.units;
+            document.getElementById('statUnitsLabel').textContent = d.unitsLabel;
+            document.getElementById('statAvgOrder').textContent = d.avgOrder;
+            document.getElementById('statTopSeller').textContent = d.topSeller || '—';
+        }
+
+        function renderTransactions(rows) {
+            const tbody = document.getElementById('transactionsBody');
+            if (!tbody) return;
+            if (!rows || !rows.length) {
+                tbody.innerHTML = '<tr><td colspan="6" style="color:var(--txt2);text-align:center;">No transactions available yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = rows.slice(0, 8).map(r => `
+                <tr>
+                    <td>${r.date}</td>
+                    <td>${r.description}</td>
+                    <td>${r.product}</td>
+                    <td>${r.qty}</td>
+                    <td class="amount">${_formatMoney(r.amount)}</td>
+                    <td><span class="badge ${r.channelClass || (r.channel === 'Taproom' ? 'badge-green' : (r.channel === 'Retail' ? 'badge-orange' : (r.channel === 'Events' ? 'badge-purple' : 'badge-blue')))}">${r.channel}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        window.revenueChart = new Chart(document.getElementById('revenueChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: reportData['7'].labels,
+                datasets: [{
+                    label: 'Revenue',
+                    data: reportData['7'].data,
+                    borderColor: '#9333ea',
+                    backgroundColor: 'rgba(147,51,234,0.1)',
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#9333ea',
+                    pointBorderColor: '#0d0d18',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { ...tooltipDefaults, callbacks: { label: ctx => ' $' + ctx.parsed.y.toLocaleString() } }
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b', font: { size: 12 } } },
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.04)' },
+                        ticks: { color: '#64748b', font: { size: 12 }, callback: v => '$' + (v / 1000).toFixed(0) + 'k' }
+                    }
+                }
+            }
+        });
+
+        window.productChart = new Chart(document.getElementById('productChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: reportData.topProducts.labels,
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: reportData.topProducts.data,
+                    backgroundColor: [
+                        'rgba(147,51,234,0.75)',
+                        'rgba(99,102,241,0.75)',
+                        'rgba(96,165,250,0.75)',
+                        'rgba(16,185,129,0.75)',
+                        'rgba(245,158,11,0.75)',
+                        'rgba(100,116,139,0.6)'
+                    ],
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { ...tooltipDefaults, callbacks: { label: ctx => ' $' + ctx.parsed.y.toLocaleString() } }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 11 } } },
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.04)' },
+                        ticks: { color: '#64748b', font: { size: 11 }, callback: v => '$' + v.toLocaleString() }
+                    }
+                }
+            }
+        });
+
+        document.getElementById('txMonthBadge').textContent = reportData.txBadge || 'February 2026';
+        renderTransactions(reportData.transactions || []);
+        updateRevenueChart('Last 7 Months');
+    </script>
+    <!-- Delete Account Modal -->
+    <div class="modal-overlay" id="deleteAccountModal"
+        style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:2000;">
+        <div
+            style="background:#13132a;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:32px;width:420px;max-width:95vw;position:relative;">
+            <button onclick="closeDeleteAccountModal()"
+                style="position:absolute;top:16px;right:18px;background:none;border:none;color:#94a3b8;font-size:22px;cursor:pointer;line-height:1;">×</button>
+            <div style="font-size:28px;margin-bottom:12px;">🗑️</div>
+            <div style="font-size:17px;font-weight:700;margin-bottom:6px;color:#f1f5f9;">Delete Account</div>
+            <div style="font-size:13px;color:#94a3b8;margin-bottom:22px;">This action is permanent and cannot be undone.
+                Enter your credentials to confirm.</div>
+            <div style="margin-bottom:14px;">
+                <label
+                    style="display:block;font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Email
+                    / Username</label>
+                <input id="da-email" type="email" placeholder="ravi@tamperline.us"
+                    style="width:100%;background:#1a1a35;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px 14px;color:#f1f5f9;font-family:inherit;font-size:13px;">
+            </div>
+            <div style="margin-bottom:14px;">
+                <label
+                    style="display:block;font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Password</label>
+                <input id="da-password" type="password" placeholder="Your password"
+                    style="width:100%;background:#1a1a35;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px 14px;color:#f1f5f9;font-family:inherit;font-size:13px;">
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:18px;">
+                <input type="checkbox" id="da-show-pw"
+                    onchange="document.getElementById('da-password').type=this.checked?'text':'password'">
+                <span style="font-size:12px;color:#64748b;">Show password</span>
+            </label>
+            <p id="da-error" style="display:none;color:#f87171;font-size:12px;margin-bottom:12px;"></p>
+            <div style="display:flex;gap:10px;">
+                <button onclick="closeDeleteAccountModal()"
+                    style="flex:1;background:#1a1a35;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:11px;color:#94a3b8;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;">Cancel</button>
+                <button onclick="confirmDeleteAccount()"
+                    style="flex:1;background:linear-gradient(135deg,#dc2626,#b91c1c);border:none;border-radius:8px;padding:11px;color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;">Yes,
+                    Delete</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function openDeleteAccountModal() {
+            document.getElementById('da-email').value = '';
+            document.getElementById('da-password').value = '';
+            document.getElementById('da-error').style.display = 'none';
+            document.getElementById('da-show-pw').checked = false;
+            document.getElementById('da-password').type = 'password';
+            document.getElementById('deleteAccountModal').style.display = 'flex';
+        }
+        function closeDeleteAccountModal() {
+            document.getElementById('deleteAccountModal').style.display = 'none';
+        }
+        function confirmDeleteAccount() {
+            const email = document.getElementById('da-email').value.trim();
+            const password = document.getElementById('da-password').value;
+            const errEl = document.getElementById('da-error');
+            if (!email || !password) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display = 'block'; return; }
+            const result = TL_deleteAccount(email, password);
+            if (result === 'ok') { window.location.href = 'index.html'; }
+            else { errEl.textContent = 'Incorrect email or password.'; errEl.style.display = 'block'; }
+        }
+        document.getElementById('deleteAccountModal').addEventListener('click', function (e) { if (e.target === this) closeDeleteAccountModal(); });
+    </script>
+</body>
+
+</html>
+
+
+
+
+

@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings — Tamperline.us</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- EmailJS SDK — sends emails directly from the browser -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0d0d18;
+            --bg2: #13132a;
+            --bg3: #1a1a35;
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #9333ea;
+            --accent2: #6366f1;
+            --blue: #60a5fa;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --red: #f87171;
+            --txt: #f1f5f9;
+            --txt2: #94a3b8;
+            --txt3: #64748b;
+            --radius: 14px;
+            --sidebar-w: 240px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--txt);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 100;
+            padding: 28px 0 24px;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 22px 28px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 18px;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+        }
+
+        .brand-name {
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .brand-name span {
+            color: var(--accent2);
+        }
+
+        .nav-section-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--txt3);
+            text-transform: uppercase;
+            padding: 10px 22px 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 22px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--txt2);
+            text-decoration: none;
+            margin: 1px 10px;
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--txt);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(147, 51, 234, 0.18), rgba(99, 102, 241, 0.12));
+            color: var(--txt);
+        }
+
+        .nav-item.active .nav-icon {
+            color: var(--accent);
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-spacer {
+            flex: 1;
+        }
+
+        .sidebar-logout {
+            margin: 0 10px;
+            padding: 10px 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--red);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s;
+            background: none;
+            border: none;
+            width: calc(100% - 20px);
+            font-family: inherit;
+        }
+
+        .sidebar-logout:hover {
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .topbar-sub {
+            font-size: 12px;
+            color: var(--txt2);
+            margin-top: 2px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .avatar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.14), rgba(99, 102, 241, 0.09));
+            border-radius: 12px;
+            padding: 8px 14px 8px 8px;
+            border: 1px solid rgba(147, 51, 234, 0.32);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .avatar-wrap:hover {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.22), rgba(99, 102, 241, 0.16));
+            border-color: rgba(147, 51, 234, 0.55);
+            box-shadow: 0 0 18px rgba(147, 51, 234, 0.22);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--blue));
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+            font-weight: 800;
+            flex-shrink: 0;
+            box-shadow: 0 0 12px rgba(147, 51, 234, 0.45);
+        }
+
+        .avatar-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .avatar-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--txt);
+        }
+
+        .avatar-role {
+            font-size: 10px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-top: 3px;
+            letter-spacing: 0.04em;
+        }
+
+        .notification-btn {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .notif-dot {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            width: 7px;
+            height: 7px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 2px solid var(--bg2);
+        }
+
+        .content {
+            padding: 32px;
+            flex: 1;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .stat-icon.purple {
+            background: rgba(147, 51, 234, 0.15);
+        }
+
+        .stat-icon.blue {
+            background: rgba(96, 165, 250, 0.15);
+        }
+
+        .stat-icon.green {
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .stat-icon.orange {
+            background: rgba(245, 158, 11, 0.15);
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--txt2);
+            font-weight: 500;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 14px;
+            color: var(--txt);
+            font-family: inherit;
+            font-size: 13px;
+        }
+
+        .search-box::placeholder {
+            color: var(--txt3);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .filter-select {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 14px;
+            color: var(--txt);
+            font-family: inherit;
+            font-size: 13px;
+        }
+
+        .filter-select option {
+            background: var(--bg3);
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 18px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-add:hover {
+            opacity: 0.88;
+        }
+
+        .panel {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .panel-badge {
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(147, 51, 234, 0.15);
+            color: var(--accent);
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--txt3);
+            padding: 12px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr {
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        tbody td {
+            padding: 12px 20px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .event-name {
+            font-weight: 600;
+            color: var(--txt);
+        }
+
+        .event-sub {
+            font-size: 11px;
+            color: var(--txt3);
+            margin-top: 2px;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--green);
+        }
+
+        .badge-blue {
+            background: rgba(96, 165, 250, 0.15);
+            color: var(--blue);
+        }
+
+        .badge-orange {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--orange);
+        }
+
+        .badge-red {
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--red);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-btn {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--txt2);
+            transition: all 0.15s;
+        }
+
+        .action-btn:hover {
+            color: var(--txt);
+            border-color: rgba(147, 51, 234, 0.4);
+            background: rgba(147, 51, 234, 0.1);
+        }
+
+        .action-btn.del:hover {
+            color: var(--red);
+            border-color: rgba(248, 113, 113, 0.3);
+            background: rgba(248, 113, 113, 0.06);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            width: 560px;
+            max-width: 95vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--txt2);
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--txt);
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .modal-sub {
+            font-size: 12px;
+            color: var(--txt2);
+            margin-bottom: 24px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--txt2);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: var(--txt);
+            font-family: inherit;
+            font-size: 13px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.12);
+        }
+
+        .form-input::placeholder {
+            color: var(--txt3);
+        }
+
+        .form-select option {
+            background: var(--bg3);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.88;
+        }
+
+        .modal-success {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 16px 0;
+        }
+
+        .modal-success.show {
+            display: flex;
+        }
+
+        .success-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+        }
+
+        .success-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .success-msg {
+            font-size: 13px;
+            color: var(--txt2);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .btn-done {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--txt);
+            padding: 10px 28px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* ── DROPDOWNS ── */
+        .dropdown-wrap {
+            position: relative;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: var(--bg2);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.04);
+            z-index: 999;
+        }
+
+        .dropdown.open {
+            display: block;
+            animation: dropIn 0.18s cubic-bezier(0.34, 1.2, 0.64, 1);
+        }
+
+        @keyframes dropIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .notif-dropdown {
+            width: 340px;
+        }
+
+        .notif-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .notif-header-title {
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notif-count-badge {
+            font-size: 10px;
+            font-weight: 700;
+            background: rgba(147, 51, 234, 0.2);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .notif-mark-read {
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            transition: color 0.2s;
+        }
+
+        .notif-mark-read:hover {
+            color: var(--blue);
+        }
+
+        .notif-list {
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+
+        .notif-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .notif-item.unread {
+            background: rgba(147, 51, 234, 0.06);
+        }
+
+        .notif-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .notif-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notif-title {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--txt);
+            margin-bottom: 2px;
+        }
+
+        .notif-desc {
+            font-size: 11.5px;
+            color: var(--txt2);
+            line-height: 1.4;
+        }
+
+        .notif-time {
+            font-size: 10px;
+            color: var(--txt3);
+            margin-top: 4px;
+        }
+
+        .notif-unread-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--accent);
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        .notif-footer {
+            padding: 11px 18px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .notif-footer a {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .notif-footer a:hover {
+            color: var(--blue);
+        }
+
+        .profile-dropdown {
+            width: 224px;
+        }
+
+        .profile-hdr {
+            padding: 14px 18px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-hdr-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--txt);
+        }
+
+        .profile-hdr-role {
+            font-size: 11px;
+            color: var(--txt3);
+            margin-top: 3px;
+        }
+
+        .pmenu {
+            padding: 6px 0;
+        }
+
+        .pmenu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--txt2);
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            text-decoration: none;
+        }
+
+        .pmenu-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--txt);
+        }
+
+        .pmenu-item.danger {
+            color: var(--red);
+        }
+
+        .pmenu-item.danger:hover {
+            background: rgba(248, 113, 113, 0.08);
+        }
+
+        .pmenu-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 5px 0;
+        }
+
+        .pmenu-icon {
+            font-size: 14px;
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .chevron-icon {
+            font-size: 9px;
+            color: var(--txt3);
+            margin-left: 2px;
+        }
+
+        .dropdown-wrap.active .notification-btn {
+            background: rgba(147, 51, 234, 0.15);
+            border-color: rgba(147, 51, 234, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">🍺</div>
+            <div class="brand-name">Brew<span>Track</span></div>
+        </div>
+        <div class="nav-section-label">Main</div>
+        <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="inventory.html" class="nav-item"><span class="nav-icon">📦</span> Inventory</a>
+        <a href="batches.html" class="nav-item"><span class="nav-icon">🧪</span> Batches</a>
+        <a href="bookings.html" class="nav-item active"><span class="nav-icon">📅</span> Bookings</a>
+        <div class="nav-section-label">Analytics</div>
+        <a href="reports.html" class="nav-item"><span class="nav-icon">📈</span> Sales Reports</a>
+        <a href="insights.html" class="nav-item"><span class="nav-icon">💡</span> Insights</a>
+        <div class="nav-section-label">Settings</div>
+        <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+        <div class="sidebar-spacer"></div>
+        <button class="sidebar-logout" onclick="logout()"><span class="nav-icon">🚪</span> Log Out</button>
+    </aside>
+
+    <div class="main">
+        <header class="topbar">
+            <div>
+                <div class="topbar-title">Bookings &amp; Events</div>
+                <div class="topbar-sub" id="topbar-sub">0 upcoming</div>
+            </div>
+            <div class="topbar-right">
+                <!-- Notification Bell -->
+                <div class="dropdown-wrap" id="notifWrap">
+                    <div class="notification-btn" onclick="toggleDropdown('notifDrop','notifWrap')">🔔<span
+                            class="notif-dot" id="notifDot"></span></div>
+                    <div class="dropdown notif-dropdown" id="notifDrop">
+                        <div class="notif-header">
+                            <span class="notif-header-title">Notifications</span>
+                            <span class="notif-count-badge" id="notifBadge">3 new</span>
+                            <button class="notif-mark-read" onclick="markAllRead()">Mark all read</button>
+                        </div>
+                        <div class="notif-list">
+                            <div class="notif-item unread">
+                                <div class="notif-icon" style="background:rgba(147,51,234,0.15);color:#9333ea">📦</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Low Stock Alert<span class="notif-unread-dot"></span></div>
+                                    <div class="notif-desc">Cascade Hops below reorder level (2 lbs remaining)</div>
+                                    <div class="notif-time">5 minutes ago</div>
+                                </div>
+                            </div>
+                            <div class="notif-item unread">
+                                <div class="notif-icon" style="background:rgba(16,185,129,0.15);color:#10b981">🍺</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Batch Ready<span class="notif-unread-dot"></span></div>
+                                    <div class="notif-desc">Batch #45 West Coast IPA is ready for packaging</div>
+                                    <div class="notif-time">1 hour ago</div>
+                                </div>
+                            </div>
+                            <div class="notif-item unread">
+                                <div class="notif-icon" style="background:rgba(96,165,250,0.15);color:#60a5fa">📅</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">New Booking<span class="notif-unread-dot"></span></div>
+                                    <div class="notif-desc">Henderson Wedding confirmed for Mar 15</div>
+                                    <div class="notif-time">3 hours ago</div>
+                                </div>
+                            </div>
+                            <div class="notif-item">
+                                <div class="notif-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b">📊</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Weekly Summary</div>
+                                    <div class="notif-desc">Your weekly report is ready — revenue up 8.2%</div>
+                                    <div class="notif-time">Yesterday</div>
+                                </div>
+                            </div>
+                            <div class="notif-item">
+                                <div class="notif-icon" style="background:rgba(147,51,234,0.15);color:#9333ea">🏆</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Revenue Milestone</div>
+                                    <div class="notif-desc">You hit $18K in February — new monthly record!</div>
+                                    <div class="notif-time">2 days ago</div>
+                                </div>
+                            </div>
+                            <div class="notif-item">
+                                <div class="notif-icon" style="background:rgba(99,102,241,0.15);color:#6366f1">⚙️</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">System</div>
+                                    <div class="notif-desc">Tamperline.us updated to v2.4.1 — see what's new</div>
+                                    <div class="notif-time">3 days ago</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notif-footer"><a href="#">View all notifications →</a></div>
+                    </div>
+                </div>
+                <!-- Profile Menu -->
+                <div class="dropdown-wrap" id="profileWrap">
+                    <div class="avatar-wrap" onclick="toggleDropdown('profileDrop','profileWrap')">
+                        <div class="avatar">B</div>
+                        <div class="avatar-info">
+                            <div class="avatar-name">My Brewery</div>
+                            <div class="avatar-role">✦ Barrel Plan</div>
+                        </div>
+                        <svg class="chevron-icon" viewBox="0 0 20 20" fill="currentColor"
+                            style="width:16px;height:16px;flex-shrink:0;">
+                            <path fill-rule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="dropdown profile-dropdown" id="profileDrop">
+                        <div class="profile-hdr">
+                            <div class="avatar" style="width:40px;height:40px;font-size:17px;border-radius:11px;">B
+                            </div>
+                            <div>
+                                <div class="profile-hdr-name">My Brewery</div>
+                                <div class="profile-hdr-role">Owner · Barrel Plan</div>
+                            </div>
+                        </div>
+                        <div class="pmenu">
+                            <a class="pmenu-item" href="settings.html"><span class="pmenu-icon">👤</span>My Profile</a>
+                            <a class="pmenu-item" href="settings.html"><span class="pmenu-icon">⚙️</span>Settings</a>
+                            <a class="pmenu-item" href="settings.html#billing"><span class="pmenu-icon">💳</span>Billing
+                                &amp; Plan</a>
+                            <a class="pmenu-item" href="dashboard.html"><span class="pmenu-icon">🏠</span>Dashboard</a>
+                            <div class="pmenu-divider"></div>
+                            <a class="pmenu-item" href="help-support.html"><span class="pmenu-icon">❓</span>Help &amp;
+                                Support</a>
+                            <div class="pmenu-divider"></div>
+                            <a class="pmenu-item danger" href="#" onclick="openDeleteAccountModal();return false;"><span
+                                    class="pmenu-icon">🗑️</span>Delete Account</a>
+                            <a class="pmenu-item danger" href="#" onclick="logout();return false;"><span
+                                    class="pmenu-icon">🚪</span>Log Out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon purple">📅</div>
+                    <div class="stat-value" id="stat-upcoming">0</div>
+                    <div class="stat-label">Upcoming Events</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">✅</div>
+                    <div class="stat-value" id="stat-confirmed">0</div>
+                    <div class="stat-label">Confirmed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">⏳</div>
+                    <div class="stat-value" id="stat-pending">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">💰</div>
+                    <div class="stat-value" id="stat-deposits">$0.00</div>
+                    <div class="stat-label">Deposits Collected</div>
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <input class="search-box" id="bookingSearch" type="text" placeholder="🔍  Search events..."
+                    oninput="filterBookings()">
+                <select class="filter-select" id="typeFilter" onchange="filterBookings()">
+                    <option value="">All Types</option>
+                    <option value="Private Event">Private Event</option>
+                    <option value="Corporate">Corporate</option>
+                    <option value="Public Event">Public Event</option>
+                    <option value="Rental">Rental</option>
+                </select>
+                <select class="filter-select" id="statusFilter" onchange="filterBookings()">
+                    <option value="">All Status</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="pending">Pending</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <button class="btn-add" onclick="checkTrialAndCreateBooking()">➕ Create Booking</button>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">All Bookings</div>
+                    <span class="panel-badge" id="bookingCount">7 bookings</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Type</th>
+                            <th>Date &amp; Time</th>
+                            <th>Guests</th>
+                            <th>Room / Space</th>
+                            <th>Status</th>
+                            <th>Deposit</th>
+                            <th>Amount to Pay</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE BOOKING MODAL -->
+    <div class="modal-overlay" id="createBookingModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('createBookingModal')">×</button>
+            <div id="createBookingForm">
+                <div class="modal-title">📅 Create Booking</div>
+                <div class="modal-sub">Schedule a taproom event, rental, or private booking.</div>
+                <form onsubmit="handleCreateBooking(event)">
+                    <div class="form-group">
+                        <label class="form-label">Event Name *</label>
+                        <input class="form-input" id="cb-name" type="text" placeholder="e.g. Smith Wedding Reception"
+                            required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Event Type *</label>
+                            <select class="form-select" id="cb-type" required>
+                                <option value="">Select type</option>
+                                <option>Private Event</option>
+                                <option>Corporate</option>
+                                <option>Public Event</option>
+                                <option>Rental</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Room / Space *</label>
+                            <select class="form-select" id="cb-room" required>
+                                <option value="">Select room</option>
+                                <option>Taproom</option>
+                                <option>Barrel Room</option>
+                                <option>Brew Floor</option>
+                                <option>Private Lounge</option>
+                                <option>Warehouse</option>
+                                <option>Outdoor Patio</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Date *</label>
+                            <input class="form-input" id="cb-date" type="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Time *</label>
+                            <input class="form-input" id="cb-time" type="time" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Expected Guests *</label>
+                            <input class="form-input" id="cb-guests" type="number" min="0" placeholder="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Deposit Amount ($) *</label>
+                            <input class="form-input" id="cb-deposit" type="number" min="0" placeholder="0" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Amount to be Paid ($) *</label>
+                        <input class="form-input" id="cb-amount-to-pay" type="number" min="0" placeholder="0" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Contact Name *</label>
+                            <input class="form-input" id="cb-contact" type="text" placeholder="Full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contact Email *</label>
+                            <input class="form-input" id="cb-email" type="email" placeholder="ravi@tamperline.us" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notes *</label>
+                        <textarea class="form-textarea" id="cb-notes"
+                            placeholder="Special requests, setup requirements..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">📅 Confirm Booking</button>
+                </form>
+            </div>
+            <div class="modal-success" id="createBookingSuccess">
+                <div class="success-icon">🎉</div>
+                <div class="success-title">Booking Confirmed!</div>
+                <div class="success-msg" id="createBookingSuccessMsg">Your event has been scheduled.</div>
+                <!-- Email send status -->
+                <div id="emailStatusWrap"
+                    style="margin-bottom:18px;min-height:44px;display:flex;align-items:center;justify-content:center;">
+                    <div id="emailStatusBox"
+                        style="display:none;background:rgba(147,51,234,0.08);border:1px solid rgba(147,51,234,0.2);border-radius:10px;padding:10px 18px;font-size:13px;color:var(--txt2);display:flex;align-items:center;gap:10px;">
+                        <span id="emailStatusIcon" style="font-size:18px;">📧</span>
+                        <div>
+                            <div id="emailStatusText" style="font-weight:600;color:var(--txt);">Sending confirmation
+                                email...</div>
+                            <div id="emailStatusSub" style="font-size:11px;margin-top:2px;"></div>
+                        </div>
+                        <span id="emailCountdown"
+                            style="font-size:20px;font-weight:800;color:var(--accent);min-width:24px;text-align:center;"></span>
+                    </div>
+                </div>
+                <button class="btn-done" onclick="closeModal('createBookingModal'); renderBookingTable();">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRICING PLANS MODAL -->
+    <div class="modal-overlay" id="pricingModal">
+        <div class="modal" style="width: 600px; padding: 40px;">
+            <button class="modal-close" onclick="closePricingModal()">×</button>
+            <div style="text-align: center; margin-bottom: 32px;">
+                <div style="font-size: 48px; margin-bottom: 16px;">🚀</div>
+                <h2 style="font-size: 22px; font-weight: 800; color: var(--txt); margin-bottom: 8px;">
+                    Upgrade Your Plan to Add More <span id="pricingFeatureName">Items</span>
+                </h2>
+                <p style="font-size: 14px; color: var(--txt2); line-height: 1.6;">
+                    Your trial period allows 1 <span id="pricingFeatureName2">item</span> each for Bookings, Inventory, and Batches. 
+                    Upgrade to a paid plan to unlock unlimited access.
+                </p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+                <div style="background: rgba(147,51,234,0.1); border: 1px solid rgba(147,51,234,0.3); border-radius: 12px; padding: 24px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: 800; color: var(--accent); margin-bottom: 8px;">Barrel Plan</div>
+                    <div style="font-size: 12px; color: var(--txt2); margin-bottom: 16px;">Most Popular</div>
+                    <div style="font-size: 36px; font-weight: 800; color: var(--txt); margin-bottom: 4px;">$29</div>
+                    <div style="font-size: 12px; color: var(--txt2); margin-bottom: 20px;">per month</div>
+                    <div style="text-align: left; font-size: 13px; color: var(--txt2); margin-bottom: 20px; line-height: 1.8;">
+                        ✓ Unlimited bookings<br>
+                        ✓ Unlimited inventory items<br>
+                        ✓ Unlimited batch logs<br>
+                        ✓ Advanced analytics<br>
+                        ✓ Email support
+                    </div>
+                    <button style="width: 100%; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 600; cursor: pointer; font-family: inherit; font-size: 14px;">
+                        Choose Plan
+                    </button>
+                </div>
+
+                <div style="background: rgba(16,185,129,0.1); border: 2px solid rgba(16,185,129,0.4); border-radius: 12px; padding: 24px; text-align: center; position: relative;">
+                    <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--green); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 700;">BEST VALUE</div>
+                    <div style="font-size: 24px; font-weight: 800; color: var(--green); margin-bottom: 8px; margin-top: 10px;">Brewmaster Plan</div>
+                    <div style="font-size: 12px; color: var(--txt2); margin-bottom: 16px;">Full Features</div>
+                    <div style="font-size: 36px; font-weight: 800; color: var(--txt); margin-bottom: 4px;">$79</div>
+                    <div style="font-size: 12px; color: var(--txt2); margin-bottom: 20px;">per month</div>
+                    <div style="text-align: left; font-size: 13px; color: var(--txt2); margin-bottom: 20px; line-height: 1.8;">
+                        ✓ Everything in Barrel Plan<br>
+                        ✓ Team access (5 users)<br>
+                        ✓ Advanced reporting<br>
+                        ✓ API access<br>
+                        ✓ Priority support
+                    </div>
+                    <button style="width: 100%; background: linear-gradient(135deg, var(--green), #059669); color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 600; cursor: pointer; font-family: inherit; font-size: 14px;">
+                        Choose Plan
+                    </button>
+                </div>
+            </div>
+
+            <div style="text-align: center; padding: 16px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 20px;">
+                <p style="font-size: 12px; color: var(--txt3); margin-bottom: 8px;">💳 All plans include 7-day free trial</p>
+                <p style="font-size: 12px; color: var(--txt3);">Cancel anytime. No hidden fees.</p>
+            </div>
+
+            <button class="btn-done" onclick="closePricingModal()" style="width: 100%; background: rgba(255,255,255,0.06);">Maybe Later</button>
+        </div>
+    </div>
+
+    <!-- EDIT BOOKING MODAL -->
+    <div class="modal-overlay" id="editBookingModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('editBookingModal')">×</button>
+            <div id="editBookingForm">
+                <div class="modal-title">✏️ Edit Booking</div>
+                <div class="modal-sub">Update booking status and deposit amount.</div>
+                <form onsubmit="handleEditBooking(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Status *</label>
+                            <select class="form-select" id="eb-status" required>
+                                <option value="">Select status</option>
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Deposit Amount ($)</label>
+                            <input class="form-input" id="eb-deposit" type="number" min="0" placeholder="0">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">💾 Save Changes</button>
+                </form>
+            </div>
+            <div class="modal-success" id="editBookingSuccess">
+                <div class="success-icon">✅</div>
+                <div class="success-title">Booking Updated!</div>
+                <div class="success-msg" id="editBookingSuccessMsg">Your booking has been updated successfully.</div>
+                <button class="btn-done" onclick="closeModal('editBookingModal'); renderBookingTable();">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="tldata.js"></script>
+    <script>
+        /* ============================================================
+           EMAIL CONFIGURATION — EmailJS (https://www.emailjs.com)
+           ============================================================
+           SETUP STEPS (free account — 200 emails/month):
+           1. Go to https://www.emailjs.com and create a free account
+           2. Add an Email Service (Gmail recommended):
+              Dashboard → Email Services → Add New Service
+           3. Create TWO Email Templates:
+
+              Template 1 — Booking Confirmation:
+                Subject : Booking Confirmed — {{event_name}}
+                Body    : Hi there, your booking has been confirmed.
+                          Thank you for choosing Tamperline.us!
+                          Event   : {{event_name}}
+                          Date    : {{event_date}}
+                          Venue   : {{event_room}}
+                          We look forward to hosting you!
+                          — Tamperline.us Team
+
+              Template 2 — Delivery / Event Day Reminder:
+                Subject : 🎉 Your Event Is Today — {{event_name}}
+                Body    : Yay! Your booking is ready.
+                          {{event_name}} will arrive today, {{event_date}}.
+                          We look forward to seeing you!
+                          — Tamperline.us Team
+
+              In BOTH templates set:
+                To Email  field → {{to_email}}
+                From Name field → Tamperline.us
+                Reply-To  field → ravi@tamperline.us
+
+           4. Replace the three placeholder values below:
+        ============================================================ */
+        const EMAILJS_PUBLIC_KEY = '1Z-9V5KNTheIpE2wg';       // Account → API Keys
+        const EMAILJS_SERVICE_ID = 'service_hxhhkt7';       // Email Services tab
+        const EMAILJS_CONFIRM_TEMPLATE = 'template_3oc7asv'; // Template 1 ID
+        const EMAILJS_REMINDER_TEMPLATE = 'template_ppfhzuu';// Template 2 ID
+
+        // Set to true once you have filled in real credentials above
+        const EMAILJS_CONFIGURED = true;
+
+        /* ── initialise EmailJS once ── */
+        function TL_initEmailJS() {
+            if (EMAILJS_CONFIGURED && typeof emailjs !== 'undefined') {
+                emailjs.init(EMAILJS_PUBLIC_KEY);
+            }
+        }
+
+        /* ── animated countdown → then send email ── */
+        function TL_showEmailCountdown(toEmail, onDone) {
+            const box = document.getElementById('emailStatusBox');
+            const icon = document.getElementById('emailStatusIcon');
+            const text = document.getElementById('emailStatusText');
+            const sub = document.getElementById('emailStatusSub');
+            const cntEl = document.getElementById('emailCountdown');
+            if (!box) { if (onDone) onDone(); return; }
+
+            box.style.display = 'flex';
+            icon.textContent = '📧';
+            text.textContent = 'Sending confirmation email…';
+            text.style.color = 'var(--txt)';
+            sub.textContent = toEmail;
+            cntEl.textContent = '3';
+
+            let count = 2;
+            const iv = setInterval(() => {
+                if (count > 0) {
+                    cntEl.textContent = count--;
+                } else {
+                    clearInterval(iv);
+                    cntEl.textContent = '';
+                    icon.textContent = '✅';
+                    text.textContent = 'Confirmation email sent!';
+                    text.style.color = 'var(--green)';
+                    box.style.borderColor = 'rgba(16,185,129,0.3)';
+                    box.style.background = 'rgba(16,185,129,0.06)';
+                    if (onDone) onDone();
+                }
+            }, 1000);
+        }
+
+        /* ── send booking confirmation email ── */
+        function TL_sendConfirmationEmail({ toEmail, eventName, eventDate, eventRoom }) {
+            if (!EMAILJS_CONFIGURED || typeof emailjs === 'undefined') return;
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CONFIRM_TEMPLATE, {
+                to_email: toEmail,
+                event_name: eventName,
+                event_date: eventDate,
+                event_room: eventRoom
+            }).catch(err => console.warn('EmailJS confirmation error:', err));
+        }
+
+        /* ── send delivery/event-day reminder email ── */
+        function TL_sendReminderEmail({ toEmail, eventName, eventDate }) {
+            if (!EMAILJS_CONFIGURED || typeof emailjs === 'undefined') return;
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_REMINDER_TEMPLATE, {
+                to_email: toEmail,
+                event_name: eventName,
+                event_date: eventDate
+            }).catch(err => console.warn('EmailJS reminder error:', err));
+        }
+
+        /* ── store a delivery reminder in localStorage ── */
+        function TL_scheduleReminder(bookingId, rawDate, toEmail, eventName) {
+            if (!rawDate || !toEmail) return;
+            const key = 'tl_pending_reminders';
+            const list = JSON.parse(localStorage.getItem(key) || '[]');
+            // avoid duplicates
+            if (list.some(r => r.id === bookingId)) return;
+            list.push({ id: bookingId, date: rawDate, toEmail, eventName, sent: false });
+            localStorage.setItem(key, JSON.stringify(list));
+        }
+
+        /* ── check & fire pending delivery reminders ── */
+        function TL_checkDeliveryReminders() {
+            const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+            const key = 'tl_pending_reminders';
+            const list = JSON.parse(localStorage.getItem(key) || '[]');
+            let changed = false;
+            list.forEach(r => {
+                if (!r.sent && r.date === today) {
+                    TL_sendReminderEmail({ toEmail: r.toEmail, eventName: r.eventName, eventDate: r.date });
+                    r.sent = true;
+                    changed = true;
+                    console.log('📅 Delivery reminder sent for:', r.eventName);
+                }
+            });
+            if (changed) localStorage.setItem(key, JSON.stringify(list));
+        }
+
+        // Load bookings from localStorage (per user)
+        let _tlD = TL_getData();
+        let bookingsData = _tlD.bookings;
+        let nextBookingId = _tlD.nextBookingId || 8;
+
+        function _saveBookings() {
+            const d = TL_getData();
+            d.bookings = bookingsData;
+            d.nextBookingId = nextBookingId;
+            TL_saveData(d);
+        }
+
+        const statusBadge = {
+            confirmed: '<span class="badge badge-green">Confirmed</span>',
+            pending: '<span class="badge badge-orange">Pending</span>',
+            cancelled: '<span class="badge badge-red">Cancelled</span>'
+        };
+
+        const typeBadge = {
+            'Private Event': '<span class="badge badge-blue">Private Event</span>',
+            'Corporate': '<span class="badge" style="background:rgba(147,51,234,0.15);color:var(--accent);">Corporate</span>',
+            'Public Event': '<span class="badge badge-green">Public</span>',
+            'Rental': '<span class="badge badge-orange">Rental</span>',
+            'Other': '<span class="badge" style="background:rgba(100,116,139,0.2);color:var(--txt2);">Other</span>'
+        };
+
+        function updateBookingStats() {
+            const total = bookingsData.length;
+            const confirmed = bookingsData.filter(b => b.status === 'confirmed').length;
+            const pending = bookingsData.filter(b => b.status === 'pending').length;
+            const deposits = bookingsData.reduce((sum, b) => sum + (parseFloat(b.deposit) || 0), 0);
+
+            document.getElementById('stat-upcoming').textContent = total.toLocaleString();
+            document.getElementById('stat-confirmed').textContent = confirmed.toLocaleString();
+            document.getElementById('stat-pending').textContent = pending.toLocaleString();
+            document.getElementById('stat-deposits').textContent = '$' + deposits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            const next = getNextBooking();
+            const nextText = next ? ` · Next: ${next.name}, ${next.date}` : '';
+            document.getElementById('topbar-sub').textContent = `${total.toLocaleString()} upcoming${nextText}`;
+        }
+
+        function getNextBooking() {
+            const now = new Date();
+            const candidates = bookingsData
+                .map(b => {
+                    const dt = Date.parse(b.date);
+                    return { ...b, _date: isNaN(dt) ? null : dt };
+                })
+                .filter(b => b._date && b._date >= now.getTime())
+                .sort((a, b) => a._date - b._date);
+            return candidates[0] || null;
+        }
+
+        function renderBookingTable(data) {
+            data = data || bookingsData;
+            document.getElementById('bookingCount').textContent = data.length + ' booking' + (data.length !== 1 ? 's' : '');
+            document.getElementById('bookingTableBody').innerHTML = data.map(b => {
+                const estimatedTotal = 500; // Estimated booking total (for demo purposes)
+                const amountToPay = Number.isFinite(parseFloat(b.amountToPay))
+                    ? (parseFloat(b.amountToPay) || 0)
+                    : Math.max(0, estimatedTotal - (b.deposit || 0));
+                return `
+                <tr data-type="${b.type}" data-status="${b.status}">
+                    <td>
+                        <div class="event-name">${b.name}</div>
+                        ${b.guests > 0 ? `<div class="event-sub">${b.guests} guests</div>` : ''}
+                    </td>
+                    <td>${typeBadge[b.type] || b.type}</td>
+                    <td>
+                        <div style="font-weight:600;">${b.date}</div>
+                        <div class="event-sub">${b.time}</div>
+                    </td>
+                    <td>${b.guests > 0 ? b.guests : '—'}</td>
+                    <td>${b.room}</td>
+                    <td>${statusBadge[b.status] || b.status}</td>
+                    <td>${b.deposit > 0 ? '$' + b.deposit.toLocaleString() : '—'}</td>
+                    <td><span style="color:var(--txt);font-weight:600;">$${amountToPay.toLocaleString()}</span></td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="action-btn" onclick="openEditBookingModal(${b.id})">✏️ Edit</button>
+                            <button class="action-btn del" onclick="deleteBooking(${b.id})">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `}).join('');
+            updateBookingStats();
+        }
+
+        function filterBookings() {
+            const search = document.getElementById('bookingSearch').value.toLowerCase();
+            const type = document.getElementById('typeFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const filtered = bookingsData.filter(b => {
+                const matchSearch = (b.name + b.room + b.type).toLowerCase().includes(search);
+                const matchType = !type || b.type === type;
+                const matchStatus = !status || b.status === status;
+                return matchSearch && matchType && matchStatus;
+            });
+            renderBookingTable(filtered);
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('open');
+            const form = document.getElementById(id).querySelector('[id$="Form"]');
+            const success = document.getElementById(id).querySelector('.modal-success');
+            if (form) form.style.display = '';
+            if (success) success.classList.remove('show');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function handleCreateBooking(e) {
+            e.preventDefault();
+            const name = document.getElementById('cb-name').value;
+            const type = document.getElementById('cb-type').value;
+            const rawDate = document.getElementById('cb-date').value; // YYYY-MM-DD
+            const time = document.getElementById('cb-time').value;
+            const guests = parseInt(document.getElementById('cb-guests').value) || 0;
+            const room = document.getElementById('cb-room').value;
+            const deposit = parseFloat(document.getElementById('cb-deposit').value) || 0;
+            const amountToPay = parseFloat(document.getElementById('cb-amount-to-pay').value) || 0;
+            const contactEmail = document.getElementById('cb-email').value.trim();
+
+            const dateFmt = rawDate
+                ? new Date(rawDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                : '—';
+            const timeFmt = time ? (() => {
+                const [h, m] = time.split(':');
+                const hr = parseInt(h);
+                return `${hr > 12 ? hr - 12 : hr || 12}:${m} ${hr >= 12 ? 'PM' : 'AM'}`;
+            })() : '—';
+
+            const newId = nextBookingId++;
+            bookingsData.unshift({ id: newId, name, type, date: dateFmt, time: timeFmt, guests, room, status: 'pending', deposit, amountToPay });
+            _saveBookings();
+
+            document.getElementById('createBookingForm').style.display = 'none';
+            document.getElementById('createBookingSuccessMsg').textContent =
+                `"${name}" has been scheduled for ${dateFmt} at ${room}. Status: Pending confirmation.`;
+            document.getElementById('createBookingSuccess').classList.add('show');
+
+            // Reset email status UI
+            const box = document.getElementById('emailStatusBox');
+            if (box) {
+                box.style.display = 'none';
+                box.style.background = 'rgba(147,51,234,0.08)';
+                box.style.borderColor = 'rgba(147,51,234,0.2)';
+            }
+
+            // Determine recipient email from the booking form's Contact Email field
+            const toEmail = contactEmail;
+
+            if (toEmail) {
+                // Show animated countdown, then fire the email
+                TL_showEmailCountdown(toEmail, () => {
+                    TL_sendConfirmationEmail({ toEmail, eventName: name, eventDate: dateFmt, eventRoom: room });
+                });
+                // Schedule delivery reminder for the event date
+                if (rawDate) {
+                    TL_scheduleReminder(newId, rawDate, toEmail, name);
+                    // If booking is for today, fire reminder right away too
+                    const today = new Date().toISOString().slice(0, 10);
+                    if (rawDate === today) {
+                        setTimeout(() => TL_sendReminderEmail({ toEmail, eventName: name, eventDate: dateFmt }), 4000);
+                    }
+                }
+            }
+        }
+
+        function openEditBookingModal(id) {
+            const b = bookingsData.find(x => x.id === id);
+            if (!b) return;
+            
+            document.getElementById('eb-status').value = b.status;
+            document.getElementById('eb-deposit').value = b.deposit;
+            document.getElementById('editBookingForm').style.display = 'block';
+            document.getElementById('editBookingSuccess').classList.remove('show');
+            document.getElementById('editBookingModal').dataset.bookingId = id;
+            
+            openModal('editBookingModal');
+        }
+
+        function handleEditBooking(e) {
+            e.preventDefault();
+            const bookingId = parseInt(document.getElementById('editBookingModal').dataset.bookingId);
+            const b = bookingsData.find(x => x.id === bookingId);
+            if (!b) return;
+
+            const status = document.getElementById('eb-status').value;
+            const deposit = parseFloat(document.getElementById('eb-deposit').value) || 0;
+
+            b.status = status;
+            b.deposit = deposit;
+
+            _saveBookings();
+
+            document.getElementById('editBookingForm').style.display = 'none';
+            document.getElementById('editBookingSuccessMsg').textContent =
+                `"${b.name}" has been updated successfully.`;
+            document.getElementById('editBookingSuccess').classList.add('show');
+        }
+
+        function deleteBooking(id) {
+            const b = bookingsData.find(x => x.id === id);
+            if (!b) return;
+            if (confirm(`Cancel booking: "${b.name}"?`)) {
+                bookingsData = bookingsData.filter(x => x.id !== id);
+                _saveBookings();
+                filterBookings();
+            }
+        }
+
+        function checkTrialAndCreateBooking() {
+            const isTrialActive = TL_isTrialActive();
+            const bookingCount = TL_countUserCreated('bookings', bookingsData);
+
+            if (isTrialActive && bookingCount >= 1) {
+                openPricingModal('bookings');
+                return;
+            }
+
+            openModal('createBookingModal');
+        }
+
+        function openPricingModal(feature) {
+            const modal = document.getElementById('pricingModal');
+            if (!modal) return;
+            
+            const featureName = feature === 'bookings' ? 'Bookings' : 
+                               feature === 'inventory' ? 'Inventory Items' : 'Batches';
+            
+            document.getElementById('pricingFeatureName').textContent = featureName;
+            document.getElementById('pricingFeatureName2').textContent = featureName.toLowerCase();
+            modal.classList.add('open');
+        }
+
+        function closePricingModal() {
+            document.getElementById('pricingModal').classList.remove('open');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) window.location.href = 'index.html';
+        }
+        function toggleDropdown(id, wrapId) {
+            const drop = document.getElementById(id);
+            const wrap = document.getElementById(wrapId);
+            const isOpen = drop.classList.contains('open');
+            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+            document.querySelectorAll('.dropdown-wrap').forEach(w => w.classList.remove('active'));
+            if (!isOpen) { drop.classList.add('open'); wrap.classList.add('active'); }
+        }
+        function markAllRead() {
+            document.querySelectorAll('.notif-item.unread').forEach(item => item.classList.remove('unread'));
+            document.querySelectorAll('.notif-unread-dot').forEach(dot => dot.remove());
+            const dot = document.getElementById('notifDot');
+            if (dot) dot.style.display = 'none';
+            const badge = document.getElementById('notifBadge');
+            if (badge) { badge.textContent = '0 new'; badge.style.background = 'rgba(148,163,184,0.15)'; badge.style.color = '#94a3b8'; }
+        }
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.dropdown-wrap')) {
+                document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+                document.querySelectorAll('.dropdown-wrap').forEach(w => w.classList.remove('active'));
+            }
+        });
+
+        document.querySelectorAll('.modal-overlay').forEach(o => {
+            o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+        });
+
+        TL_initEmailJS();
+        TL_checkDeliveryReminders();
+        TL_initUI();
+        renderBookingTable();
+
+        // Delete account modal (profile dropdown)
+        function openDeleteAccountModal() {
+            const m = document.getElementById('deleteAccountModal');
+            if (!m) return;
+            m.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('del-email').value = '';
+            document.getElementById('del-pass').value = '';
+            document.getElementById('del-error').style.display = 'none';
+            const cu = TL_getCurrentUser();
+            if (cu) document.getElementById('del-email').value = cu;
+        }
+        function closeDeleteAccountModal() {
+            const m = document.getElementById('deleteAccountModal');
+            if (!m) return;
+            m.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        function confirmDeleteAccount() {
+            const email = document.getElementById('del-email').value.trim().toLowerCase();
+            const pass = document.getElementById('del-pass').value;
+            const errEl = document.getElementById('del-error');
+            errEl.style.display = 'none';
+            if (!email || !pass) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display = 'block'; return; }
+            const raw = localStorage.getItem('tl_user_' + email);
+            if (!raw) { errEl.textContent = '✗ No account found with this email.'; errEl.style.display = 'block'; return; }
+            const user = JSON.parse(raw);
+            if (user.password !== pass) { errEl.textContent = '✗ Incorrect password. Please try again.'; errEl.style.display = 'block'; return; }
+            TL_deleteAccount(email);
+        }
+    </script>
+
+    <!-- Delete Account Modal -->
+    <div id="deleteAccountModal"
+        style="display:none;position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,0.78);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;"
+        onclick="if(event.target===this)closeDeleteAccountModal()">
+        <div
+            style="background:#13132a;border:1px solid rgba(248,113,113,0.35);border-radius:18px;padding:32px;width:100%;max-width:420px;position:relative;">
+            <button onclick="closeDeleteAccountModal()"
+                style="position:absolute;top:14px;right:16px;background:none;border:none;color:#94a3b8;font-size:22px;cursor:pointer;">×</button>
+            <div style="text-align:center;margin-bottom:20px;">
+                <div style="font-size:36px;margin-bottom:10px;">🗑️</div>
+                <h2 style="font-size:18px;font-weight:800;color:#f87171;margin-bottom:6px;">Delete Account</h2>
+                <p style="font-size:13px;color:#94a3b8;line-height:1.5;">This action is <strong
+                        style="color:#f87171;">permanent and irreversible</strong>. All your data will be permanently
+                    deleted.</p>
+            </div>
+            <div style="margin-bottom:12px;">
+                <label
+                    style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:5px;">Your
+                    Email (Username)</label>
+                <input id="del-email" type="email" placeholder="ravi@tamperline.us"
+                    style="width:100%;background:#0d0d18;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:#f1f5f9;font-family:inherit;font-size:13px;">
+            </div>
+            <div style="margin-bottom:6px;">
+                <label
+                    style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:5px;">Your
+                    Password</label>
+                <input id="del-pass" type="password" placeholder="Enter your password"
+                    style="width:100%;background:#0d0d18;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:#f1f5f9;font-family:inherit;font-size:13px;">
+            </div>
+            <div style="margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+                <input type="checkbox" id="del-show-pw"
+                    onchange="document.getElementById('del-pass').type=this.checked?'text':'password'">
+                <label for="del-show-pw" style="font-size:12px;color:#64748b;cursor:pointer;">Show password</label>
+            </div>
+            <p id="del-error" style="display:none;color:#f87171;font-size:12px;margin-bottom:10px;text-align:center;">
+            </p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <button onclick="closeDeleteAccountModal()"
+                    style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:11px;font-family:inherit;font-size:14px;font-weight:600;color:#94a3b8;cursor:pointer;">Cancel</button>
+                <button onclick="confirmDeleteAccount()"
+                    style="background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:8px;padding:11px;font-family:inherit;font-size:14px;font-weight:600;color:#fff;cursor:pointer;">Yes,
+                    Delete</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
+
+

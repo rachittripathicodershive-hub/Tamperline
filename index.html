@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tamperline.us — Inventory & Booking for Craft Breweries</title>
+  <meta name="description"
+    content="Tamperline.us — Stock tracking, batch management, and rental booking for craft breweries and small retailers.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+
+<body>
+
+  <canvas id="stars"></canvas>
+  <div class="particles"></div>
+
+  <!-- ========== LOGIN / SIGN-UP MODAL ========== -->
+  <div id="authModal" class="auth-modal" role="dialog" aria-modal="true" aria-label="Sign in or create account">
+    <div class="auth-card">
+      <!-- Close -->
+      <button class="auth-close" onclick="closeAuthModal()" aria-label="Close">&times;</button>
+
+      <!-- Logo inside modal -->
+      <div class="auth-brand">
+        <div class="logo-box" style="margin:0 auto 12px;width:48px;height:48px;font-size:18px;">🍺</div>
+        <h2 class="auth-title">Welcome to Tamperline.us</h2>
+        <p class="auth-sub">Sign in to manage your inventory &amp; bookings</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+        <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create Account</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="form-login" class="auth-form" onsubmit="handleAuth(event,'login')">
+        <div class="auth-field">
+          <label for="login-email">Email Address</label>
+          <input type="email" id="login-email" placeholder="ravi@tamperline.us" required autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+          <a href="#" class="auth-forgot">Forgot password?</a>
+        </div>
+        <div class="auth-check" style="margin-top:2px;margin-bottom:6px;">
+          <input type="checkbox" id="login-show-pw" onchange="togglePasswordVisibility('login-password',this)">
+          <label for="login-show-pw" style="font-size:12px;color:var(--txt-3,#64748b);cursor:pointer;">Show
+            password</label>
+        </div>
+        <button type="submit" class="primary-btn auth-submit">Sign In →</button>
+        <p class="auth-switch">Don't have an account? <a href="#" onclick="switchTab('signup')">Create one free</a></p>
+      </form>
+
+      <!-- SIGNUP FORM (hidden by default) -->
+      <form id="form-signup" class="auth-form auth-form-hidden" onsubmit="handleAuth(event,'signup')">
+        <div class="auth-row">
+          <div class="auth-field">
+            <label for="signup-fname">First Name</label>
+            <input type="text" id="signup-fname" placeholder="Alex" required>
+            <span class="field-msg" id="msg-fname"></span>
+          </div>
+          <div class="auth-field">
+            <label for="signup-lname">Last Name</label>
+            <input type="text" id="signup-lname" placeholder="Brewer" required>
+            <span class="field-msg" id="msg-lname"></span>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label for="signup-business">Business / Brewery Name</label>
+          <input type="text" id="signup-business" placeholder="Hopscotch Brewing Co." required>
+          <span class="field-msg" id="msg-business"></span>
+        </div>
+        <div class="auth-field">
+          <label for="signup-email">Work Email</label>
+          <input type="email" id="signup-email" placeholder="ravi@tamperline.us" required autocomplete="email">
+          <span class="field-msg" id="msg-email"></span>
+        </div>
+        <div class="auth-field">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" placeholder="Min. 8 characters" required minlength="8"
+            autocomplete="new-password">
+          <span class="field-msg" id="msg-password"></span>
+          <div class="auth-check" style="margin-top:4px;">
+            <input type="checkbox" id="signup-show-pw" onchange="togglePasswordVisibility('signup-password',this)">
+            <label for="signup-show-pw" style="font-size:12px;color:var(--txt-3,#64748b);cursor:pointer;">Show
+              password</label>
+          </div>
+          <!-- Password requirements checklist -->
+          <ul class="pw-reqs" id="pw-reqs">
+            <li id="req-upper">Uppercase letter (A–Z)</li>
+            <li id="req-lower">Lowercase letter (a–z)</li>
+            <li id="req-digit">Number (0–9)</li>
+            <li id="req-special">Special character (!@#$%^&amp;*...)</li>
+          </ul>
+        </div>
+        <div class="auth-check">
+          <input type="checkbox" id="signup-agree" required>
+          <label for="signup-agree">I agree to the <a href="terms.html" target="_blank">Terms</a> &amp; <a
+              href="privacy.html" target="_blank">Privacy Policy</a></label>
+        </div>
+        <button type="submit" class="primary-btn auth-submit">Create Free Account →</button>
+        <p class="auth-switch">Already have an account? <a href="#" onclick="switchTab('login')">Sign in</a></p>
+      </form>
+
+      <!-- Success message (hidden) -->
+      <div id="auth-success" class="auth-success-msg" style="display:none;">
+        <div class="auth-success-icon">✅</div>
+        <h3>You're all set!</h3>
+        <p id="auth-success-text">Welcome back. Redirecting to your dashboard...</p>
+      </div>
+
+      <!-- ===== SIGNUP OTP VERIFICATION PANEL ===== -->
+      <div id="signup-otp-panel" style="display:none;">
+        <div class="auth-brand">
+          <div class="logo-box" style="margin:0 auto 12px;width:48px;height:48px;font-size:18px;">📧</div>
+          <h2 class="auth-title">Verify Your Email</h2>
+          <p class="auth-sub" id="signup-otp-sub">A 6-digit code has been sent to your email.</p>
+        </div>
+        <div id="signup-otp-countdown"
+          style="text-align:center;font-size:12px;color:var(--accent,#9333ea);font-weight:600;margin-bottom:14px;">
+          Code expires in <span id="signup-otp-timer">5:00</span>
+        </div>
+        <div class="auth-field">
+          <label for="signup-otp">6-Digit Code</label>
+          <input type="text" id="signup-otp" maxlength="6" placeholder="000000" autocomplete="one-time-code"
+            style="letter-spacing:0.35em;text-align:center;font-size:22px;font-weight:700;">
+          <span class="field-msg" id="signup-otp-msg"></span>
+        </div>
+        <div id="signup-otp-status" style="min-height:28px;font-size:13px;text-align:center;margin-bottom:8px;"></div>
+        <button class="primary-btn auth-submit" onclick="signupVerifyOTP()">Verify & Create Account →</button>
+        <p class="auth-switch"><a href="#" onclick="signupResendOTP();return false;">Didn't receive it? Resend</a> | <a href="#" onclick="signupBackToForm();return false;">← Back</a></p>
+      </div>
+      <!-- ===== / SIGNUP OTP VERIFICATION PANEL ===== -->
+      <!-- ===== / SIGNUP OTP VERIFICATION PANEL ===== -->
+
+      <!-- ===== FORGOT PASSWORD PANEL (3 steps) ===== -->
+      <div id="fp-panel" style="display:none;">
+
+        <!-- Step 1 — Enter registered email -->
+        <div id="fp-step1">
+          <div class="auth-brand">
+            <div class="logo-box" style="margin:0 auto 12px;width:48px;height:48px;font-size:18px;">🔑</div>
+            <h2 class="auth-title">Reset Password</h2>
+            <p class="auth-sub">Enter your registered email and we'll send a verification code.</p>
+          </div>
+          <div class="auth-field">
+            <label for="fp-email">Email Address</label>
+            <input type="email" id="fp-email" placeholder="ravi@tamperline.us" autocomplete="email">
+            <span class="field-msg" id="fp-email-msg"></span>
+          </div>
+          <div id="fp-send-status" style="min-height:28px;font-size:13px;text-align:center;margin-bottom:8px;"></div>
+          <button class="primary-btn auth-submit" onclick="fpSubmitEmail()">Send Verification Code →</button>
+          <p class="auth-switch"><a href="#" onclick="hideForgotPassword();return false;">← Back to Sign In</a></p>
+        </div>
+
+        <!-- Step 2 — Enter OTP -->
+        <div id="fp-step2" style="display:none;">
+          <div class="auth-brand">
+            <div class="logo-box" style="margin:0 auto 12px;width:48px;height:48px;font-size:18px;">📧</div>
+            <h2 class="auth-title">Enter Your Code</h2>
+            <p class="auth-sub" id="fp-step2-sub">A 6-digit code has been sent to your email.</p>
+          </div>
+          <div id="fp-countdown"
+            style="text-align:center;font-size:12px;color:var(--accent,#9333ea);font-weight:600;margin-bottom:14px;">
+            Code expires in <span id="fp-timer">5:00</span>
+          </div>
+          <div class="auth-field">
+            <label for="fp-otp">6-Digit Code</label>
+            <input type="text" id="fp-otp" maxlength="6" placeholder="000000" autocomplete="one-time-code"
+              style="letter-spacing:0.35em;text-align:center;font-size:22px;font-weight:700;">
+            <span class="field-msg" id="fp-otp-msg"></span>
+          </div>
+          <button class="primary-btn auth-submit" onclick="fpVerifyOTP()">Verify Code →</button>
+          <p class="auth-switch"><a href="#" onclick="fpResendOTP();return false;">Didn't receive it? Resend</a></p>
+        </div>
+
+        <!-- Step 3 — Set new password -->
+        <div id="fp-step3" style="display:none;">
+          <div class="auth-brand">
+            <div class="logo-box" style="margin:0 auto 12px;width:48px;height:48px;font-size:18px;">🔒</div>
+            <h2 class="auth-title">Set New Password</h2>
+            <p class="auth-sub">Create a strong new password for your account.</p>
+          </div>
+          <div class="auth-field">
+            <label for="fp-newpass">New Password</label>
+            <input type="password" id="fp-newpass" placeholder="Min. 8 characters" minlength="8">
+            <span class="field-msg" id="fp-newpass-msg"></span>
+          </div>
+          <div class="auth-field">
+            <label for="fp-confirmpass">Confirm New Password</label>
+            <input type="password" id="fp-confirmpass" placeholder="Repeat your new password">
+            <span class="field-msg" id="fp-confirm-msg"></span>
+          </div>
+          <div class="auth-check" style="margin-top:2px;margin-bottom:10px;">
+            <input type="checkbox" id="fp-show-pw"
+              onchange="togglePasswordVisibility('fp-newpass',this);togglePasswordVisibility('fp-confirmpass',this)">
+            <label for="fp-show-pw" style="font-size:12px;color:var(--txt-3,#64748b);cursor:pointer;">Show
+              passwords</label>
+          </div>
+          <button class="primary-btn auth-submit" onclick="fpSetNewPassword()">Update Password →</button>
+        </div>
+
+      </div>
+      <!-- ===== / FORGOT PASSWORD PANEL ===== -->
+    </div>
+  </div>
+  <!-- ========== / LOGIN MODAL ========== -->
+
+
+  <!-- ===== HEADER ===== -->
+  <header id="navbar">
+    <div class="container nav">
+
+      <!-- LOGO — click to scroll to top -->
+      <div class="logo" style="cursor:pointer;" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+        title="Back to top">
+        <div class="logo-row">
+          <div class="logo-box">🍺</div>
+          <span class="logo-name">Tamperline.us</span>
+        </div>
+        <!-- SVG brand mark below company name -->
+        <div class="logo-mark">
+          <svg viewBox="0 0 170 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Tamperline.us logo">
+            <!-- Barrel icon -->
+            <rect x="1" y="5" width="14" height="12" rx="3" fill="url(#blg)" opacity="0.9" />
+            <line x1="1" y1="11" x2="15" y2="11" stroke="#fff" stroke-width="1.2" opacity="0.4" />
+            <line x1="4" y1="5" x2="4" y2="17" stroke="#fff" stroke-width="1" opacity="0.3" />
+            <line x1="12" y1="5" x2="12" y2="17" stroke="#fff" stroke-width="1" opacity="0.3" />
+            <!-- Wordmark -->
+            <text x="22" y="15.5" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#a78bfa"
+              letter-spacing="0.04em">TAMPER</text>
+            <text x="80" y="15.5" font-family="Inter, sans-serif" font-size="11" font-weight="300" fill="#60a5fa"
+              letter-spacing="0.04em">LINE.US</text>
+            <defs>
+              <linearGradient id="blg" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#9333ea" />
+                <stop offset="100%" stop-color="#6366f1" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <span class="logo-tagline">Brewery &amp; Retail Platform</span>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#testimonials">About Us</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="outline-btn" onclick="openAuthModal('login')">Sign In</button>
+        <button class="primary-btn" onclick="openAuthModal('signup')">Get Started →</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="container fade-up">
+
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Now in public beta — Free for small breweries &amp; retailers
+      </div>
+
+      <h1>Inventory &amp; booking,<br>
+        <span>built for craft breweries.</span>
+      </h1>
+
+      <p>Track stock levels, manage batch production, and handle equipment rentals — all in one dashboard built for
+        small, local businesses.</p>
+
+      <div class="hero-cta">
+        <button class="primary-btn large" onclick="openAuthModal('signup')">Start Free Trial →</button>
+        <button class="outline-btn large" onclick="openDemoModal()">Watch Demo</button>
+      </div>
+
+      <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=1400&auto=format&fit=crop"
+          alt="Craft brewery inventory management">
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS BAR ===== -->
+  <div class="stats-bar fade-up">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <h3>Public Beta</h3>
+          <p>Open for Early Brewery Teams</p>
+        </div>
+        <div class="stat-item">
+          <h3>All-in-One</h3>
+          <p>Inventory, Batches &amp; Bookings</p>
+        </div>
+        <div class="stat-item">
+          <h3>99.9%</h3>
+          <p>Inventory Accuracy</p>
+        </div>
+        <div class="stat-item">
+          <h3>40+</h3>
+          <p>States &amp; Countries</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD PREVIEW ===== -->
+  <section class="dashboard-preview fade-up">
+    <div class="dashboard-window">
+      <div class="window-bar">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="chat-area">
+        <div class="message left">🍻 Batch #42 — IPA (240 gal) — fermentation complete</div>
+        <div class="message right">✅ Kegs filled &amp; moved to cold storage</div>
+        <div class="message left">⚠️ Hops inventory low — reorder needed by Friday</div>
+        <div class="message right">📅 Taproom booking confirmed for Sat 7pm</div>
+      </div>
+    </div>
+
+    <div class="dashboard-image">
+      <img src="bm4.jpeg" alt="Tamperline.us Dashboard">
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section id="features" class="section fade-up">
+    <div class="container">
+      <div class="section-eyebrow">Platform Features</div>
+      <h2>Built for craft breweries &amp; small retailers</h2>
+      <p class="section-sub">Everything you need to run a smooth operation — from grain to glass, and kegs to customers.
+      </p>
+      <div class="feature-grid">
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1608270586620-248524c67de9?q=80&w=800&auto=format&fit=crop"
+            alt="Stock Tracking">
+          <div class="card-body">
+            <div class="card-title">📦 Live Stock Tracking</div>
+            <div class="card-desc">Real-time inventory levels for ingredients, kegs, bottles, and packaging. Get
+              low-stock alerts automatically.</div>
+          </div>
+        </div>
+        <div class="card">
+          <img src="bm2.jpg" alt="Batch Management">
+          <div class="card-body">
+            <div class="card-title">🧪 Batch Management</div>
+            <div class="card-desc">Log every brew batch — recipes, fermentation timelines, tasting notes, and production
+              costs in one place.</div>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1554224154-26032ffc0d07?q=80&w=800&auto=format&fit=crop"
+            alt="Booking System">
+          <div class="card-body">
+            <div class="card-title">📅 Rental &amp; Booking</div>
+            <div class="card-desc">Handle taproom reservations, equipment rentals, and event bookings with automated
+              confirmations.</div>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop"
+            alt="Analytics">
+          <div class="card-body">
+            <div class="card-title">📊 Sales &amp; Analytics</div>
+            <div class="card-desc">Track your best-selling brews, seasonal trends, revenue per batch, and waste — all in
+              live dashboards.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section id="pricing" class="section fade-up">
+    <div class="container">
+      <div class="section-eyebrow">Simple Pricing</div>
+      <h2>Plans that scale with your brewery</h2>
+      <p class="section-sub">No hidden fees. Cancel any time. Start free — no credit card required.</p>
+
+      <div class="toggle">
+        <span>Monthly</span>
+        <label class="switch">
+          <input type="checkbox" id="priceToggle">
+          <span class="slider"></span>
+        </label>
+        <span>Yearly <span
+            style="background:rgba(16,185,129,0.15);color:#10b981;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:4px;">Save
+            20%</span></span>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <img src="https://images.unsplash.com/photo-1600423115367-87ea7661688f?q=80&w=800&auto=format&fit=crop"
+            alt="Tap Plan">
+          <div class="pricing-body">
+            <h3>Tap</h3>
+            <p style="font-size:13px;color:var(--txt-3)">Perfect for nano-breweries &amp; home retailers</p>
+            <h4 class="price" data-month="199" data-year="1592">$199</h4>
+            <p class="price-period">per month, billed monthly</p>
+            <ul class="pricing-features">
+              <li>Up to 5 batch logs/month</li>
+              <li>Basic inventory tracking</li>
+              <li>10 bookings/month</li>
+              <li>Email alerts &amp; reminders</li>
+            </ul>
+            <button class="pricing-btn pricing-btn-ghost" onclick="openAuthModal('signup')">Start Free</button>
+          </div>
+        </div>
+        <div class="pricing-card popular">
+          <span class="popular-label">Most Popular</span>
+          <img src="https://images.unsplash.com/photo-1535958636474-b021ee887b13?q=80&w=800&auto=format&fit=crop"
+            alt="Barrel Plan">
+          <div class="pricing-body">
+            <h3>Barrel</h3>
+            <p style="font-size:13px;color:var(--txt-3)">For growing craft breweries</p>
+            <h4 class="price" data-month="399" data-year="3192">$399</h4>
+            <p class="price-period">per month, billed monthly</p>
+            <ul class="pricing-features">
+              <li>Unlimited batch logs</li>
+              <li>Full inventory + low-stock alerts</li>
+              <li>Unlimited bookings &amp; rentals</li>
+              <li>Sales &amp; analytics dashboard</li>
+              <li>Priority support</li>
+            </ul>
+            <button class="pricing-btn pricing-btn-solid" onclick="openAuthModal('signup')">Start Free Trial</button>
+          </div>
+        </div>
+        <div class="pricing-card">
+          <img src="bm.jpg" alt="Cellar Plan">
+          <div class="pricing-body">
+            <h3>Cellar</h3>
+            <p style="font-size:13px;color:var(--txt-3)">For multi-location breweries &amp; distributors</p>
+            <h4 class="price" data-month="699" data-year="5592">$699</h4>
+            <p class="price-period">per month, billed monthly</p>
+            <ul class="pricing-features">
+              <li>Multi-location inventory</li>
+              <li>Custom reports &amp; exports</li>
+              <li>POS &amp; supplier integrations</li>
+              <li>24 / 7 dedicated support</li>
+              <li>SSO &amp; team permissions</li>
+            </ul>
+            <button class="pricing-btn pricing-btn-ghost" onclick="openAuthModal('signup')">Contact Sales</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT COMPANY ===== -->
+  <section id="testimonials" class="section fade-up">
+    <div class="container">
+      <div class="section-eyebrow">About Tamperline</div>
+      <h2>Built for breweries that need control and clarity</h2>
+      <p class="section-sub">Tamperline.us helps independent breweries and retailers run day-to-day operations with a
+        practical, easy-to-use system.
+      </p>
+
+      <div class="testimonial-slider">
+        <div class="testimonial active">
+          <p class="quote-text">We started with one goal: replace scattered spreadsheets and manual tracking with one
+            reliable workspace for inventory, batches, bookings, and reporting.</p>
+          <div class="testimonial-author">
+            <img src="a3.webp" class="avatar" alt="Tamperline mission">
+            <div class="author-info">
+              <div class="author-name">Our Mission</div>
+              <div class="author-role">Simple tools that improve daily operations</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <p class="quote-text">From keg movement and batch lifecycle to booking workflows, every feature is designed to
+            reduce operational friction and save team time.</p>
+          <div class="testimonial-author">
+            <img src="a4.webp" class="avatar" alt="Tamperline capabilities">
+            <div class="author-info">
+              <div class="author-name">What We Deliver</div>
+              <div class="author-role">Inventory, bookings, analytics, and team visibility</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <p class="quote-text">As your brewery grows, Tamperline.us scales with you through cleaner processes, better
+            reporting, and responsive support focused on real-world needs.</p>
+          <div class="testimonial-author">
+            <img src="a1.webp" class="avatar" alt="Tamperline commitment">
+            <div class="author-info">
+              <div class="author-name">Our Commitment</div>
+              <div class="author-role">Reliable platform support as you expand</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-dots">
+        <div class="dot active" onclick="goToSlide(0)"></div>
+        <div class="dot" onclick="goToSlide(1)"></div>
+        <div class="dot" onclick="goToSlide(2)"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+
+        <!-- Brand col -->
+        <div class="footer-brand-col">
+          <div class="logo">
+            <div class="logo-row">
+              <div class="logo-box">🍺</div>
+              <span class="logo-name">Tamperline.us</span>
+            </div>
+            <div class="logo-mark">
+              <svg viewBox="0 0 170 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="5" width="14" height="12" rx="3" fill="url(#fblg)" opacity="0.9" />
+                <line x1="1" y1="11" x2="15" y2="11" stroke="#fff" stroke-width="1.2" opacity="0.4" />
+                <line x1="4" y1="5" x2="4" y2="17" stroke="#fff" stroke-width="1" opacity="0.3" />
+                <line x1="12" y1="5" x2="12" y2="17" stroke="#fff" stroke-width="1" opacity="0.3" />
+                <text x="22" y="15.5" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#a78bfa"
+                  letter-spacing="0.04em">TAMPER</text>
+                <text x="80" y="15.5" font-family="Inter, sans-serif" font-size="11" font-weight="300" fill="#60a5fa"
+                  letter-spacing="0.04em">LINE.US</text>
+                <defs>
+                  <linearGradient id="fblg" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#9333ea" />
+                    <stop offset="100%" stop-color="#6366f1" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <span class="logo-tagline">Brewery &amp; Retail Platform</span>
+            </div>
+          </div>
+          <p>The all-in-one inventory &amp; booking platform for craft breweries and small retailers. Built for local
+            businesses, by operators who get it.</p>
+          <div class="footer-socials">
+            <a href="https://x.com/Ravi1956144" class="social-icon" aria-label="Twitter" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.261 5.635 5.904-5.634Zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+            </a>
+            <a href="https://www.linkedin.com/in/tamperline-7330643b0/"
+              target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+            </a>
+            <a href="https://www.instagram.com/ravi_rana1100" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Product col -->
+        <div class="footer-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#testimonials">About Us</a></li>
+            <li><a href="changelogs.html">Changelog</a></li>
+            <li><a href="#">Integrations</a></li>
+          </ul>
+        </div>
+
+        <!-- Company col -->
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="careers.html">Careers</a></li>
+            <li><a href="press.html">Press</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal col -->
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="terms.html">Terms &amp; Conditions</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="refund.html">Refund Policy</a></li>
+            <li><a href="cookies.html">Cookie Policy</a></li>
+            <li><a href="security.html">Security</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <p>© 2026 Tamperline.us. All Rights Reserved.</p>
+        <address>📍 1021 E Lincolnway #9869, Cheyenne, WY 82001, USA</address>
+        <div class="footer-legal-links">
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="refund.html">Refunds</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== DEMO VIDEO MODAL ========== -->
+  <div id="demoModal" class="demo-modal" onclick="if(event.target===this)closeDemoModal()">
+    <button class="demo-close" onclick="closeDemoModal()" aria-label="Close video">&times;</button>
+    <div class="demo-modal-card">
+      <div class="demo-video-wrap">
+        <video id="demoVideo" src="sr.mp4" controls controlsList="nodownload" playsinline></video>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+  <!-- ========== EmailJS CONFIGURATION FOR SIGNUP OTP ========== -->
+  <script>
+    /* 
+       EMAIL CONFIGURATION — EmailJS Setup for Signup OTP
+       ====================================================
+       Follow these steps to enable email verification during signup:
+
+       1. Go to https://www.emailjs.com and create a FREE account
+       2. Create EMAIL SERVICE (note the Service ID):
+          - Choose any email provider (Gmail, Outlook, custom SMTP)
+          - Complete the setup wizard
+          - Your Service ID will look like: service_xxx123
+
+       3. Create EMAIL TEMPLATE in the Templates section:
+          - Template Name: Signup OTP Template
+          - "To Email" field: {{to_email}}
+          - "Subject": Email Verification Code — Tamperline.us
+          - "HTML Body" content (copy and paste):
+
+            <p>Hi {{first_name}},</p>
+            <p>Welcome to Tamperline.us! Your verification code is:</p>
+            <p style="text-align:center; font-size: 28px; font-weight: bold; letter-spacing: 0.3em; color: #9333ea;">{{otp_code}}</p>
+            <p>This code expires in 5 minutes.</p>
+            <p>If you didn't request this, please ignore this email.</p>
+            <p>— Tamperline.us Team</p>
+
+          - Copy and paste the Template ID below
+
+       4. Get your PUBLIC KEY from Account → API Keys section (looks like: abc123XYZ...)
+
+       5. Paste your configuration keys below:
+    */
+
+    // YOUR EMAILJS CONFIGURATION — PASTE YOUR KEYS HERE
+    window.SIGNUP_EMAILJS_PUBLIC_KEY = 'j9CZaYKHuzCV3qHkT';        // From: Account → API Keys
+    window.SIGNUP_EMAILJS_SERVICE_ID = 'service_v3jrake';        // From: Email Services tab → Service ID
+    window.SIGNUP_EMAILJS_TEMPLATE_ID = 'template_p5722wk';      // From: Templates tab → Template ID (Signup OTP)
+
+    // IMPORTANT: Replace the placeholder texts above with your actual EmailJS credentials
+    // Get these from https://www.emailjs.com/dashboard
+  </script>
+
+</body>
+
+</html>
+
